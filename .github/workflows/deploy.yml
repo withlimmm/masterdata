@@ -14,7 +14,8 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: '8.4'          # ← sesuai Hostinger
+          extensions: mbstring, pdo, pdo_mysql, zip, bcmath, intl
 
       - name: Install Composer dependencies
         run: composer install --no-dev --optimize-autoloader
@@ -38,10 +39,10 @@ jobs:
         with:
           switches: -avzr --delete
           path: ./
-          remote_path: /home/u408052271/CompanyProfile
+          remote_path: /home/u408052271/domains/rakiradigital.com/CompanyProfile
           remote_host: ${{ secrets.HOSTINGER_HOST }}
           remote_port: ${{ secrets.HOSTINGER_PORT }}
-          remote_user: ${{ secrets.HOSTINGER_USERNAME }}
+          remote_user: u408052271
           remote_key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
 
       - name: Copy public content to public_html and fix index.php
@@ -49,23 +50,23 @@ jobs:
         with:
           host: ${{ secrets.HOSTINGER_HOST }}
           port: ${{ secrets.HOSTINGER_PORT }}
-          username: ${{ secrets.HOSTINGER_USERNAME }}
+          username: u408052271
           key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
           script: |
-            rm -rf /home/u408052271/public_html/*
-            cp -r /home/u408052271/CompanyProfile/public/* /home/u408052271/public_html/
-            sed -i 's|__DIR__."/../bootstrap/app.php|__DIR__."/../CompanyProfile/bootstrap/app.php|g' /home/u408052271/public_html/index.php
-            sed -i 's|__DIR__."/../vendor/autoload.php|__DIR__."/../CompanyProfile/vendor/autoload.php|g' /home/u408052271/public_html/index.php
+            rm -rf /home/u408052271/domains/rakiradigital.com/public_html/*
+            cp -r /home/u408052271/domains/rakiradigital.com/CompanyProfile/public/* /home/u408052271/domains/rakiradigital.com/public_html/
+            sed -i 's|__DIR__."/../bootstrap/app.php|__DIR__."/../CompanyProfile/bootstrap/app.php|g' /home/u408052271/domains/rakiradigital.com/public_html/index.php
+            sed -i 's|__DIR__."/../vendor/autoload.php|__DIR__."/../CompanyProfile/vendor/autoload.php|g' /home/u408052271/domains/rakiradigital.com/public_html/index.php
 
       - name: Run migrations & cache
         uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.HOSTINGER_HOST }}
           port: ${{ secrets.HOSTINGER_PORT }}
-          username: ${{ secrets.HOSTINGER_USERNAME }}
+          username: u408052271
           key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
           script: |
-            cd /home/u408052271/CompanyProfile
+            cd /home/u408052271/domains/rakiradigital.com/CompanyProfile
             php artisan migrate --force
             php artisan config:cache
             php artisan route:cache
