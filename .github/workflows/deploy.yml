@@ -14,11 +14,21 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'          # ← sesuai Hostinger
+          php-version: '8.4'
           extensions: mbstring, pdo, pdo_mysql, zip, bcmath, intl
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - name: Install Composer dependencies
         run: composer install --no-dev --optimize-autoloader
+
+      - name: Install NPM dependencies & build assets
+        run: |
+          npm install
+          npm run build
 
       - name: Prepare .env
         run: |
