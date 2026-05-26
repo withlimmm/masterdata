@@ -68,4 +68,10 @@ class PageController extends Controller
         $page->delete();
         return redirect()->route('admin.pages.index')->with('success', 'Halaman berhasil dihapus!');
     }
+    public function about()
+    {
+        $companySetting = \App\Models\CompanySetting::first();
+        $teams = \App\Models\Team::all(); // jika ada model Team
+        return view('about', compact('companySetting', 'teams'));
+    }
 }

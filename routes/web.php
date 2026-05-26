@@ -136,21 +136,30 @@ Route::get('/', function () {
 
 Route::get('/layanan', function () {
     $services = collect();
+    $settings = null;
     if (Schema::hasTable('services')) {
         $services = \App\Models\Service::where('status', 'active')->latest()->get();
     }
+    if (Schema::hasTable('company_settings')) {
+        $settings = CompanySetting::first();
+    }
 
-    return view('services', compact('services'));
+    return view('services', compact('services', 'settings'));
 })->name('services');
 
 Route::get('/layanan/{slug}', function ($slug) {
     $service = \App\Models\Service::where('slug', $slug)->firstOrFail();
-    return view('services.show', compact('service'));
+    $settings = null;
+    if (Schema::hasTable('company_settings')) {
+        $settings = CompanySetting::first();
+    }
+    return view('services.show', compact('service', 'settings'));
 })->name('services.show');
 
 Route::get('/portofolio', function () {
     $categories = collect();
     $portfolios = collect();
+    $settings = null;
 
     if (Schema::hasTable('categories')) {
         $categories = \App\Models\Category::all();
@@ -160,26 +169,39 @@ Route::get('/portofolio', function () {
         $portfolios = \App\Models\Portfolio::with('category')->latest()->get();
     }
 
-    return view('portfolio', compact('categories', 'portfolios'));
+    if (Schema::hasTable('company_settings')) {
+        $settings = \App\Models\CompanySetting::first();
+    }
+
+    return view('portfolio', compact('categories', 'portfolios', 'settings'));
 })->name('portfolio');
 
 Route::get('/portofolio/{slug}', function ($slug) {
     $portfolio = \App\Models\Portfolio::with('category')->where('slug', $slug)->firstOrFail();
-    return view('portfolio-detail', compact('portfolio'));
+    $settings = null;
+    if (Schema::hasTable('company_settings')) {
+        $settings = \App\Models\CompanySetting::first();
+    }
+    return view('portfolio-detail', compact('portfolio', 'settings'));
 })->name('portfolio.show');
 
 Route::get('/tentang-kami', function () {
     $teams = collect();
+    $settings = null;
     if (Schema::hasTable('teams')) {
         $teams = Team::latest()->get();
     }
+    if (Schema::hasTable('company_settings')) {
+        $settings = CompanySetting::first();
+    }
 
-    return view('about', compact('teams'));
+    return view('about', compact('teams', 'settings'));
 })->name('about');
 
 Route::get('/blog', function () {
     $categories = collect();
     $articles = collect();
+    $settings = null;
 
     if (Schema::hasTable('categories')) {
         $categories = Category::with('articles')->get();
@@ -196,7 +218,11 @@ Route::get('/blog', function () {
         }
     }
 
-    return view('blog', compact('categories', 'articles'));
+    if (Schema::hasTable('company_settings')) {
+        $settings = CompanySetting::first();
+    }
+
+    return view('blog', compact('categories', 'articles', 'settings'));
 })->name('blog');
 
 Route::get('/blog/{slug}', function (string $slug) {
@@ -225,7 +251,12 @@ Route::get('/blog/{slug}', function (string $slug) {
             ->get();
     }
 
-    return view('blog-detail', compact('article', 'related_articles'));
+    $settings = null;
+    if (Schema::hasTable('company_settings')) {
+        $settings = CompanySetting::first();
+    }
+
+    return view('blog-detail', compact('article', 'related_articles', 'settings'));
 })->name('blog.show');
 
 Route::get('/dashboard', function () {

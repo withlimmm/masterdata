@@ -36,240 +36,1320 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    <style>
+        /* ========================================
+           BRAND COLOR VARIABLES
+        ======================================== */
+        :root {
+            --primary: #0a88b2;
+            --primary-dark: #086d8f;
+            --primary-light: #2ba0cc;
+            --primary-soft: #cceef7;
+            --primary-gradient: linear-gradient(135deg, #0a88b2, #2ba0cc);
+            --primary-gradient-hover: linear-gradient(135deg, #086d8f, #0a88b2);
+            --bg-radial: radial-gradient(circle at 10% 20%, rgba(10,136,178,0.03) 0%, transparent 80%);
+        }
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Smooth Scroll & scroll padding for fixed header */
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px;
+        }
+        
+        body {
+            background: #ffffff;
+            position: relative;
+        }
+        
+        /* Subtle background pattern for depth */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-radial);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        main {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* ========================================
+           FLOATING NAVBAR (Premium)
+        ======================================== */
+        .floating-navbar {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 48px);
+            max-width: 1280px;
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border-radius: 100px;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(24px);
+            box-shadow: 0 8px 28px -6px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(10, 136, 178, 0.2);
+        }
+        
+        .floating-navbar.scrolled {
+            top: 12px;
+            width: calc(100% - 32px);
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.12);
+            border-color: rgba(10, 136, 178, 0.3);
+        }
+        
+        .navbar-container {
+            padding: 12px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        @media (max-width: 768px) {
+            .floating-navbar {
+                top: 16px;
+                width: calc(100% - 24px);
+                border-radius: 60px;
+            }
+            .navbar-container {
+                padding: 10px 20px;
+            }
+        }
+        
+        /* Logo Styling with hover effect */
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .logo-wrapper:hover {
+            transform: scale(1.02);
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .logo-text {
+            font-weight: 800;
+            font-size: 1.3rem;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        
+        .logo-text span {
+            background: var(--primary-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        
+        /* Nav Link Styling - Elegant underline */
+        .nav-link {
+            position: relative;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            padding: 6px 0;
+            color: #334155;
+            text-decoration: none;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2.5px;
+            background: var(--primary-gradient);
+            transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-radius: 2px;
+        }
+        
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .nav-link.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        /* Button Styling - gradient, smooth */
+        .btn-floating {
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 10px 26px;
+            border-radius: 60px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 6px 14px rgba(10, 136, 178, 0.25);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn-floating:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(10, 136, 178, 0.35);
+            background: var(--primary-gradient-hover);
+        }
+        
+        /* Language Switcher */
+        .lang-switch-floating {
+            background: #f0f4f9;
+            border-radius: 60px;
+            padding: 4px;
+            display: flex;
+            gap: 4px;
+            backdrop-filter: blur(4px);
+        }
+        
+        .lang-option-floating {
+            padding: 6px 18px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 50px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            color: #475569;
+            text-decoration: none;
+        }
+        
+        .lang-option-floating.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 8px rgba(10, 136, 178, 0.3);
+        }
+        
+        .lang-option-floating:not(.active):hover {
+            background: rgba(10, 136, 178, 0.1);
+            color: var(--primary);
+        }
+        
+        /* Mobile Menu Toggle */
+        .menu-toggle-floating {
+            width: 44px;
+            height: 44px;
+            background: #f0f4f9;
+            border-radius: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-toggle-floating span {
+            width: 20px;
+            height: 2px;
+            background: #1e293b;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-toggle-floating.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+            background: var(--primary);
+        }
+        
+        .menu-toggle-floating.active span:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .menu-toggle-floating.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+            background: var(--primary);
+        }
+        
+        /* Mobile Overlay */
+        .mobile-overlay-floating {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-overlay-floating.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Mobile Panel - Premium Redesign */
+        .mobile-panel-floating {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 380px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 1002;
+            transition: right 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            padding: 0;
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
+            border-left: 1px solid rgba(10, 136, 178, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-panel-floating.active {
+            right: 0;
+        }
+
+        /* Header Panel */
+        .mobile-panel-header {
+            padding: 24px 24px 16px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .mobile-panel-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mobile-panel-logo img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .mobile-panel-logo h3 {
+            font-weight: 800;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .mobile-panel-logo span {
+            background: var(--primary-gradient);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .close-panel-btn {
+            width: 36px;
+            height: 36px;
+            background: #f1f5f9;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #475569;
+        }
+
+        .close-panel-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        /* Menu Items */
+        .mobile-menu-items {
+            flex: 1;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mobile-link-floating {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            font-weight: 500;
+            color: #1e293b;
+            transition: all 0.25s ease;
+            text-decoration: none;
+        }
+
+        .mobile-link-floating:hover {
+            background: rgba(10, 136, 178, 0.08);
+            color: var(--primary);
+            transform: translateX(6px);
+        }
+
+        .mobile-link-floating .material-symbols-outlined {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        /* Bottom Section */
+        .mobile-panel-bottom {
+            padding: 24px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Language Switcher inside panel */
+        .mobile-lang-switch {
+            display: flex;
+            gap: 8px;
+            background: #f1f5f9;
+            border-radius: 50px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+
+        .mobile-lang-option {
+            flex: 1;
+            text-align: center;
+            padding: 8px 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 50px;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: #475569;
+        }
+
+        .mobile-lang-option.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 8px rgba(10,136,178,0.3);
+        }
+
+        .mobile-lang-option:not(.active):hover {
+            background: rgba(10,136,178,0.1);
+            color: var(--primary);
+        }
+
+        /* Button in panel */
+        .mobile-panel-bottom .btn-floating {
+            width: 100%;
+            justify-content: center;
+            padding: 12px;
+            font-size: 0.9rem;
+        }
+        
+        /* Progress Bar - smooth */
+        .progress-bar-floating {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: var(--primary-gradient);
+            z-index: 1003;
+            transition: width 0.12s ease-out;
+            box-shadow: 0 0 8px rgba(10,136,178,0.5);
+        }
+        
+        /* ========================================
+           PREMIUM FOOTER with glass effect
+        ======================================== */
+        .footer-premium {
+            background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+            padding: 70px 0 35px;
+            margin-top: 60px;
+            position: relative;
+            border-top-left-radius: 32px;
+            border-top-right-radius: 32px;
+        }
+        
+        .footer-premium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 40px;
+            right: 40px;
+            height: 3px;
+            background: var(--primary-gradient);
+            border-radius: 3px;
+        }
+        
+        .footer-link {
+            color: #94a3b8;
+            transition: all 0.25s ease;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+        
+        .footer-link:hover {
+            color: var(--primary-light);
+            transform: translateX(5px);
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .social-icon:hover {
+            background: var(--primary);
+            transform: translateY(-4px) scale(1.08);
+            border-color: transparent;
+        }
+        
+        .social-icon svg {
+            transition: color 0.2s;
+        }
+        
+        .social-icon:hover svg {
+            color: white;
+        }
+        
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 28px;
+            left: 28px;
+            width: 44px;
+            height: 44px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            opacity: 0;
+            visibility: hidden;
+            border: 1px solid rgba(10,136,178,0.3);
+        }
+        
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-4px);
+            background: var(--primary);
+            border-color: transparent;
+        }
+        
+        .back-to-top:hover span {
+            color: white;
+        }
+        
+        /* ========================================
+           PROFESSIONAL CHAT WIDGET - Enhanced
+        ======================================== */
+        .chat-widget-premium {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 1000;
+        }
+        
+        .chat-button-premium {
+            width: 56px;
+            height: 56px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 0 6px 20px rgba(10, 136, 178, 0.4);
+            border: none;
+        }
+        
+        .chat-button-premium:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 28px rgba(10, 136, 178, 0.5);
+        }
+        
+        .chat-tooltip-premium {
+            position: absolute;
+            bottom: 70px;
+            right: 8px;
+            background: #1e293b;
+            padding: 10px 18px;
+            border-radius: 28px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(8px);
+            transition: all 0.25s ease;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.2px;
+        }
+        
+        .chat-tooltip-premium::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            right: 20px;
+            width: 12px;
+            height: 12px;
+            background: #1e293b;
+            transform: rotate(45deg);
+        }
+        
+        .chat-tooltip-premium.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .chat-panel-premium {
+            position: absolute;
+            bottom: 76px;
+            right: 0;
+            width: 400px;
+            max-width: calc(100vw - 32px);
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(16px) scale(0.98);
+            transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid #eef2f6;
+        }
+        
+        .chat-panel-premium.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+        
+        .chat-header-premium {
+            background: #0a88b2;
+            padding: 1.25rem 1.25rem;
+        }
+        
+        .chat-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse-subtle 1.5s infinite;
+        }
+        
+        @keyframes pulse-subtle {
+            0% { opacity: 0.6; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0.6; transform: scale(0.95); }
+        }
+        
+        .chat-header-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: rgba(255,255,255,0.85);
+            text-transform: uppercase;
+        }
+        
+        .close-chat-btn {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 30px;
+            transition: all 0.2s;
+        }
+        
+        .close-chat-btn:hover {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+        
+        .agent-avatar {
+            width: 44px;
+            height: 44px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .agent-avatar span {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .chat-form-container {
+            padding: 1.5rem;
+            background: white;
+        }
+        
+        .form-field {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #5b6e7c;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-icon-simple {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+        
+        .textarea-icon-simple {
+            position: absolute;
+            left: 14px;
+            top: 16px;
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+        
+        .chat-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            font-size: 0.85rem;
+            background: #fefefe;
+            transition: all 0.2s;
+            outline: none;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .chat-input:focus {
+            border-color: #0a88b2;
+            box-shadow: 0 0 0 3px rgba(10,136,178,0.1);
+            background: white;
+        }
+        
+        textarea.chat-input {
+            padding-top: 0.75rem;
+            resize: vertical;
+        }
+        
+        .submit-chat-btn {
+            width: 100%;
+            background: #0a88b2;
+            border: none;
+            border-radius: 50px;
+            padding: 0.85rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 0.5rem;
+        }
+        
+        .submit-chat-btn:hover {
+            background: #086d8f;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(10,136,178,0.3);
+        }
+        
+        .divider-custom {
+            margin: 1.25rem 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #cbd5e1;
+            font-size: 0.7rem;
+        }
+        
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: #edf2f7;
+        }
+        
+        .social-chat-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .social-chat-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0.7rem;
+            border: 1px solid #e2edf2;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-decoration: none;
+            color: #385f6e;
+            transition: all 0.2s;
+            background: white;
+        }
+        
+        .social-chat-btn:hover {
+            border-color: #0a88b2;
+            background: #f8fcff;
+            color: #0a88b2;
+        }
+        
+        @media (max-width: 480px) {
+            .chat-panel-premium {
+                width: calc(100vw - 32px);
+                right: -8px;
+                bottom: 76px;
+            }
+            .chat-tooltip-premium {
+                display: none;
+            }
+        }
+        
+        .notification-toast {
+            position: fixed;
+            bottom: 100px;
+            right: 28px;
+            background: #1e293b;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            z-index: 1100;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: all 0.2s;
+            pointer-events: none;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        }
+        
+        .notification-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Utility Classes */
+        .fade-in-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1) forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
     @stack('styles')
 </head>
 
-<body class="site-shell selection:bg-primary selection:text-white">
+<body class="antialiased bg-white">
 
-    <!-- Default Navigation Bar -->
-    <nav class="fixed top-0 z-50 w-full border-b border-white/30 bg-glass-fill shadow-soft backdrop-blur-xl transition-all duration-300 data-[scrolled=true]:border-outline-variant/20 data-[scrolled=true]:bg-white/90">
-        <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 md:px-8 lg:px-20">
-            <a href="/" class="flex items-center gap-2 group">
-                <img src="/images/logo-rakira.png" alt="Rakira Digital"
-                    class="w-10 h-10 group-hover:scale-105 transition-transform">
-                <span class="text-xl font-bold tracking-tight text-on-surface">Rakira Digital</span>
+    <!-- Progress Bar -->
+    <div class="progress-bar-floating" id="progressBar"></div>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay-floating" id="mobileOverlay"></div>
+
+    <!-- Floating Navbar -->
+    <nav class="floating-navbar" id="floatingNavbar">
+        <div class="navbar-container">
+            <a href="/" class="logo-wrapper">
+                <div class="logo-icon">
+                    <img src="/images/logo-rakira.png" alt="Rakira Digital">
+                </div>
+                <div class="logo-text">
+                    Rakira <span>Digital</span>
+                </div>
             </a>
-            <div class="hidden items-center space-x-8 md:flex">
-                <a href="/"
-                    class="{{ request()->is('/') ? 'text-primary font-bold border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary' }} transition-colors duration-300 py-1">{{ __('Beranda') }}</a>
-                <a href="/layanan"
-                    class="{{ request()->is('layanan*') ? 'text-primary font-bold border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary' }} transition-colors duration-300 py-1">{{ __('Layanan') }}</a>
-                <a href="/portofolio"
-                    class="{{ request()->is('portofolio*') ? 'text-primary font-bold border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary' }} transition-colors duration-300 py-1">{{ __('Portofolio') }}</a>
-                <a href="/tentang-kami"
-                    class="{{ request()->is('tentang-kami*') ? 'text-primary font-bold border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary' }} transition-colors duration-300 py-1">{{ __('Tentang Kami') }}</a>
-                <a href="/blog"
-                    class="{{ request()->is('blog*') ? 'text-primary font-bold border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary' }} transition-colors duration-300 py-1">{{ __('Blog') }}</a>
+
+            <div class="hidden md:flex items-center gap-8">
+                <a href="/" class="nav-link {{ request()->is('/') ? 'active' : '' }}">{{ __('Beranda') }}</a>
+                <a href="/layanan" class="nav-link {{ request()->is('layanan*') ? 'active' : '' }}">{{ __('Layanan') }}</a>
+                <a href="/portofolio" class="nav-link {{ request()->is('portofolio*') ? 'active' : '' }}">{{ __('Portofolio') }}</a>
+                <a href="/tentang-kami" class="nav-link {{ request()->is('tentang-kami*') ? 'active' : '' }}">{{ __('Tentang Kami') }}</a>
+                <a href="/blog" class="nav-link {{ request()->is('blog*') ? 'active' : '' }}">{{ __('Blog') }}</a>
             </div>
 
-            <div class="hidden items-center gap-4 md:flex">
-                <div class="flex items-center gap-2 border border-outline-variant/30 rounded-full px-3 py-1.5 bg-white/50 backdrop-blur-md text-xs font-bold text-on-surface notranslate" translate="no">
-                    <a href="{{ route('lang.switch', 'id') }}" class="{{ app()->getLocale() == 'id' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }} transition-colors">ID</a>
-                    <span class="text-outline-variant">|</span>
-                    <a href="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() == 'en' ? 'text-primary' : 'text-on-surface-variant hover:text-on-surface' }} transition-colors">EN</a>
+            <div class="hidden md:flex items-center gap-5">
+                <div class="lang-switch-floating">
+                    <a href="{{ route('lang.switch', 'id') }}" 
+                       class="lang-option-floating {{ app()->getLocale() == 'id' ? 'active' : '' }} notranslate" translate="no">
+                        ID
+                    </a>
+                    <a href="{{ route('lang.switch', 'en') }}" 
+                       class="lang-option-floating {{ app()->getLocale() == 'en' ? 'active' : '' }} notranslate" translate="no">
+                        EN
+                    </a>
                 </div>
-                <a href="{{ url('/#kontak') }}" class="btn-primary shadow-md">
-                    {{ __('Konsultasi Gratis') }}
+                
+                <a href="{{ url('/#kontak') }}" class="btn-floating">
+                    <span>{{ __('Konsultasi Gratis') }}</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                    </svg>
                 </a>
             </div>
 
-            <button type="button" data-mobile-nav-toggle aria-expanded="false" aria-label="Buka Menu Navigasi"
-                class="md:hidden rounded-lg p-2 text-on-surface hover:bg-white/60">
-                <span class="material-symbols-outlined notranslate" translate="no">menu</span>
-            </button>
-        </div>
-
-        <div data-mobile-nav-panel class="mobile-nav-panel hidden">
-            <div class="flex items-center justify-between border-b border-outline-variant/40 pb-3">
-                <div>
-                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">{{ __('Menu') }}</p>
-                    <p class="text-sm text-on-surface-variant">{{ __('Navigasi cepat situs') }}</p>
-                </div>
-                <button type="button" data-mobile-nav-close aria-label="Tutup Menu Navigasi"
-                    class="rounded-lg p-2 text-on-surface-variant hover:bg-surface-container-low">
-                    <span class="material-symbols-outlined notranslate" translate="no">close</span>
-                </button>
-            </div>
-
-            <div class="mt-4 grid gap-2">
-                <div class="flex gap-2 text-xs font-bold px-4 mb-4 notranslate" translate="no">
-                    <a href="{{ route('lang.switch', 'id') }}" class="{{ app()->getLocale() == 'id' ? 'text-primary' : 'text-on-surface-variant' }}">ID</a>
-                    <span class="text-slate-300">|</span>
-                    <a href="{{ route('lang.switch', 'en') }}" class="{{ app()->getLocale() == 'en' ? 'text-primary' : 'text-on-surface-variant' }}">EN</a>
-                </div>
-                <a href="/"
-                    class="rounded-xl px-4 py-3 font-semibold text-on-surface-variant hover:bg-surface-container-low hover:text-primary">{{ __('Beranda') }}</a>
-                <a href="/layanan"
-                    class="rounded-xl px-4 py-3 font-semibold text-on-surface-variant hover:bg-surface-container-low hover:text-primary">{{ __('Layanan') }}</a>
-                <a href="/portofolio"
-                    class="rounded-xl px-4 py-3 font-semibold text-on-surface-variant hover:bg-surface-container-low hover:text-primary">{{ __('Portofolio') }}</a>
-                <a href="/tentang-kami"
-                    class="rounded-xl px-4 py-3 font-semibold text-on-surface-variant hover:bg-surface-container-low hover:text-primary">{{ __('Tentang Kami') }}</a>
-                <a href="/blog"
-                    class="rounded-xl px-4 py-3 font-semibold text-on-surface-variant hover:bg-surface-container-low hover:text-primary">{{ __('Blog') }}</a>
-
-                <a href="{{ url('/#kontak') }}" class="btn-primary mt-2">{{ __('Konsultasi Gratis') }}</a>
+            <div class="menu-toggle-floating md:hidden" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
     </nav>
+
+    <!-- Mobile Panel - Improved -->
+    <div class="mobile-panel-floating" id="mobilePanel">
+        <div class="mobile-panel-header">
+            <div class="mobile-panel-logo">
+                <img src="/images/logo-rakira.png" alt="Rakira Digital">
+                <h3>Rakira <span>Digital</span></h3>
+            </div>
+            <div class="close-panel-btn" id="closePanelBtn">
+                <span class="material-symbols-outlined notranslate" translate="no">close</span>
+            </div>
+        </div>
+
+        <div class="mobile-menu-items">
+            <a href="/" class="mobile-link-floating">
+                <span class="material-symbols-outlined notranslate" translate="no">home</span>
+                <span>{{ __('Beranda') }}</span>
+            </a>
+            <a href="/layanan" class="mobile-link-floating">
+                <span class="material-symbols-outlined notranslate" translate="no">design_services</span>
+                <span>{{ __('Layanan') }}</span>
+            </a>
+            <a href="/portofolio" class="mobile-link-floating">
+                <span class="material-symbols-outlined notranslate" translate="no">folder</span>
+                <span>{{ __('Portofolio') }}</span>
+            </a>
+            <a href="/tentang-kami" class="mobile-link-floating">
+                <span class="material-symbols-outlined notranslate" translate="no">info</span>
+                <span>{{ __('Tentang Kami') }}</span>
+            </a>
+            <a href="/blog" class="mobile-link-floating">
+                <span class="material-symbols-outlined notranslate" translate="no">article</span>
+                <span>{{ __('Blog') }}</span>
+            </a>
+        </div>
+
+        <div class="mobile-panel-bottom">
+            <div class="mobile-lang-switch">
+                <a href="{{ route('lang.switch', 'id') }}" 
+                   class="mobile-lang-option {{ app()->getLocale() == 'id' ? 'active' : '' }} notranslate" translate="no">
+                    ID
+                </a>
+                <a href="{{ route('lang.switch', 'en') }}" 
+                   class="mobile-lang-option {{ app()->getLocale() == 'en' ? 'active' : '' }} notranslate" translate="no">
+                    EN
+                </a>
+            </div>
+            <a href="{{ url('/#kontak') }}" class="btn-floating">
+                <span>{{ __('Konsultasi Gratis') }}</span>
+                <span class="material-symbols-outlined notranslate" translate="no">arrow_forward</span>
+            </a>
+        </div>
+    </div>
 
     <main>
         @yield('content')
     </main>
 
-    <!-- Default Footer -->
-    <footer class="w-full border-t border-white/10 bg-[#171c20] py-16 text-white">
-        <div class="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 md:grid-cols-4 md:px-8 lg:px-20">
-            <div class="col-span-1 md:col-span-2">
-                <div class="flex items-center gap-3 mb-4">
-                    <img src="{{ isset($settings) && $settings->logo_path ? asset('storage/' . $settings->logo_path) : asset('images/logo-rakira.png') }}"
-                        alt="{{ $settings->company_name ?? 'Rakira Digital' }}" class="w-10 h-10">
-                    <h3 class="text-2xl font-bold">{{ $settings->company_name ?? 'Rakira Digital Nusantara' }}</h3>
+    <!-- Premium Footer -->
+    <footer class="footer-premium">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-20">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                <div class="lg:col-span-1">
+                    <div class="flex items-center gap-3 mb-5">
+                        <img src="{{ isset($settings) && $settings->logo_path ? asset('storage/' . $settings->logo_path) : asset('images/logo-rakira.png') }}" class="w-10 h-10 object-contain" alt="Logo">
+                        <div>
+                            <h3 class="text-xl font-bold text-white">{{ $settings->company_name ?? 'Rakira Digital' }}</h3>
+                            <span class="text-xs text-primary-light">Digital Solutions</span>
+                        </div>
+                    </div>
+                    @if(isset($settings) && $settings->motto)
+                        <p class="text-slate-400 text-sm mb-4 italic border-l-2 border-primary pl-4">"{{ $settings->motto }}"</p>
+                    @endif
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        {{ Str::limit($settings->about_us ?? 'Solusi teknologi premium untuk bisnis modern. Pengembangan web, aplikasi kustom, dan transformasi digital yang scalable.', 120) }}
+                    </p>
+                    
+                    <div class="flex gap-3 mt-6">
+                        <a href="https://www.instagram.com/rakiradigital" target="_blank" class="social-icon">
+                            <svg class="w-5 h-5 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1112.324 0 6.162 6.162 0 01-12.324 0zM12 16a4 4 0 110-8 4 4 0 010 8zm4.965-10.405a1.44 1.44 0 112.881.001 1.44 1.44 0 01-2.881-.001z"/>
+                            </svg>
+                        </a>
+                        <a href="https://wa.me/{{ $settings->phone ?? '6287868184742' }}" target="_blank" class="social-icon">
+                            <svg class="w-5 h-5 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12.032 1.963c-5.524 0-10 4.476-10 10 0 1.783.476 3.46 1.308 4.918L1.99 21.01l4.184-1.318a9.954 9.954 0 004.858 1.278c5.524 0 10-4.476 10-10s-4.476-10-10-10zm0 18.5c-1.605 0-3.12-.43-4.441-1.238l-.318-.192-2.86.902.974-2.666-.226-.33a8.508 8.508 0 01-1.331-4.476c0-4.688 3.812-8.5 8.5-8.5s8.5 3.812 8.5 8.5-3.812 8.5-8.5 8.5zm4.849-6.824c-.266-.133-1.579-.779-1.825-.868-.246-.089-.425-.133-.604.133-.179.266-.697.868-.854 1.046-.157.178-.315.2-.58.067-.266-.133-1.12-.413-2.133-1.318-.789-.705-1.322-1.576-1.477-1.842-.155-.267-.016-.411.117-.544.119-.119.267-.311.4-.467.133-.156.178-.267.267-.445.089-.178.044-.334-.022-.467-.067-.133-.604-1.456-.828-1.993-.218-.523-.44-.452-.604-.46l-.52-.008c-.178 0-.467.066-.711.333-.244.267-.933.911-.933 2.222 0 1.311.955 2.578 1.088 2.756.133.178 1.88 2.869 4.553 4.022.636.274 1.133.437 1.52.56.639.2 1.22.171 1.68.103.514-.076 1.58-.646 1.802-1.27.222-.624.222-1.158.156-1.27-.067-.111-.244-.178-.51-.311z"/>
+                            </svg>
+                        </a>
+                    </div>
                 </div>
-                @if(isset($settings) && $settings->motto)
-                    <p class="text-white/60 max-w-md mb-4 italic text-[#009fe3]">"{{ $settings->motto }}"</p>
-                @endif
-                <p class="text-white/60 max-w-md">
-                    {{ Str::limit($settings->about_us ?? 'Solusi teknologi premium untuk bisnis modern. Pengembangan web, aplikasi kustom, dan transformasi digital yang scalable.', 150) }}
-                </p>
+
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-5 uppercase tracking-wider flex items-center gap-2">
+                        <span class="w-1 h-4 bg-primary rounded-full"></span>
+                        Layanan
+                    </h4>
+                    <ul class="space-y-3">
+                        <li><a href="/layanan" class="footer-link">Web Development</a></li>
+                        <li><a href="/layanan" class="footer-link">Mobile Apps</a></li>
+                        <li><a href="/layanan" class="footer-link">UI/UX Design</a></li>
+                        <li><a href="/layanan" class="footer-link">IT Consulting</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-5 uppercase tracking-wider flex items-center gap-2">
+                        <span class="w-1 h-4 bg-primary rounded-full"></span>
+                        Perusahaan
+                    </h4>
+                    <ul class="space-y-3">
+                        <li><a href="/tentang-kami" class="footer-link">Tentang Kami</a></li>
+                        <li><a href="/portofolio" class="footer-link">Portofolio</a></li>
+                        <li><a href="/blog" class="footer-link">Blog</a></li>
+                        <li><a href="#" class="footer-link">Karir</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white font-bold text-sm mb-5 uppercase tracking-wider flex items-center gap-2">
+                        <span class="w-1 h-4 bg-primary rounded-full"></span>
+                        Kontak
+                    </h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3 text-slate-400 text-sm">
+                            <span class="material-symbols-outlined text-primary text-base" translate="no">location_on</span>
+                            <span>{{ $settings->address ?? 'Tangerang, Indonesia' }}</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-base" translate="no">mail</span>
+                            <a href="mailto:{{ $settings->email ?? 'info@rakira.com' }}" class="footer-link">{{ $settings->email ?? 'info@rakira.com' }}</a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-primary text-base" translate="no">phone</span>
+                            <a href="tel:{{ $settings->phone ?? '+6287868184742' }}" class="footer-link">{{ $settings->phone ?? '+62 878-6818-4742' }}</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div>
-                <h4 class="font-bold mb-4 uppercase text-primary-container">Layanan</h4>
-                <ul class="space-y-2 text-white/60">
-                    <li><a href="/layanan" class="hover:text-white transition-colors">Web Development</a></li>
-                    <li><a href="/layanan" class="hover:text-white transition-colors">Mobile Apps</a></li>
-                    <li><a href="/layanan" class="hover:text-white transition-colors">UI/UX Design</a></li>
-                </ul>
+
+            <div class="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 text-xs">
+                <div>
+                    &copy; {{ date('Y') }} {{ $settings->company_name ?? 'Rakira Digital Nusantara' }}. All rights reserved.
+                </div>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                </div>
             </div>
-            <div>
-                <h4 class="font-bold mb-4 uppercase text-primary-container">Perusahaan</h4>
-                <ul class="space-y-2 text-white/60">
-                    <li><a href="/tentang-kami" class="hover:text-white transition-colors">Tentang Kami</a></li>
-                    <li><a href="/portofolio" class="hover:text-white transition-colors">Portofolio</a></li>
-                    <li><a href="/blog" class="hover:text-white transition-colors">Blog</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="mt-12 pt-8 border-t border-white/10 text-center text-white/40 text-sm">
-            &copy; {{ date('Y') }} {{ $settings->company_name ?? 'Rakira Digital Nusantara' }}. Hak Cipta Dilindungi.
         </div>
     </footer>
 
-    <!-- Default Chat Widget -->
-    <div x-data="{ 
-            open: false, 
-            showWidget: false,
-            showTooltip: false,
-            init() {
-                window.addEventListener('scroll', () => {
-                    if (window.scrollY > 300) {
-                        if (!this.showWidget) {
-                            this.showWidget = true;
-                            // Show tooltip 1 second after widget appears, then hide after 8s
-                            setTimeout(() => {
-                                if (!this.open) this.showTooltip = true;
-                                setTimeout(() => this.showTooltip = false, 8000);
-                            }, 1000);
-                        }
-                    }
-                });
-            }
-         }" 
-         x-show="showWidget"
-         x-transition:enter="transition ease-out duration-500"
-         x-transition:enter-start="opacity-0 translate-y-10"
-         x-transition:enter-end="opacity-100 translate-y-0"
-         class="fixed bottom-6 right-6 z-[60] md:bottom-8 md:right-8">
-        
-        <!-- Welcome Tooltip (Floating Bubble) -->
-        <div x-show="showTooltip && !open" 
-             x-transition:enter="transition ease-out duration-500"
-             x-transition:enter-start="opacity-0 translate-y-4"
-             x-transition:enter-end="opacity-100 translate-y-0"
-             x-transition:leave="transition ease-in duration-300"
-             class="absolute bottom-20 right-0 w-64 bg-white p-4 rounded-2xl shadow-xl border border-slate-100 mb-2">
-            <div class="flex items-center gap-2 mb-1.5">
-                <span class="w-2.5 h-2.5 bg-primary rounded-full animate-pulse shadow-[0_0_8px_rgba(0,159,227,0.5)]"></span>
-                <span class="text-[9px] font-black text-primary uppercase tracking-widest">Online Support</span>
-            </div>
-            <p class="text-[11px] text-slate-700 leading-relaxed font-semibold">Halo! Ada yang bisa kami bantu hari ini?</p>
-            <div class="absolute bottom-[-6px] right-6 w-3 h-3 bg-white rotate-45 border-r border-b border-slate-100"></div>
+    <!-- Back to Top Button -->
+    <div class="back-to-top" id="backToTop">
+        <span class="material-symbols-outlined text-primary text-xl notranslate" translate="no">arrow_upward</span>
+    </div>
+
+    <!-- Professional Chat Widget -->
+    <div class="chat-widget-premium" id="chatWidget">
+        <div class="chat-button-premium" id="chatButton">
+            <span class="material-symbols-outlined text-white text-2xl notranslate" translate="no" id="chatIcon">chat</span>
         </div>
 
-        <!-- Chat Panel -->
-        <div x-show="open" 
-             x-transition:enter="transition ease-out duration-300"
-             x-transition:enter-start="opacity-0 scale-95 translate-y-8"
-             x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-             x-transition:leave="transition ease-in duration-200"
-             class="absolute bottom-20 right-0 w-[320px] md:w-[350px] bg-white rounded-[2rem] shadow-[0_20px_60px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden flex flex-col">
-            
-            <!-- Header -->
-            <div class="p-6 border-b border-slate-50 bg-white">
+        <div class="chat-tooltip-premium" id="chatTooltip">
+            <div class="flex items-center gap-2">
+                <div class="status-dot"></div>
+                <span class="text-xs font-medium">Butuh bantuan? Konsultasi bisnis</span>
+            </div>
+        </div>
+
+        <div class="chat-panel-premium" id="chatPanel">
+            <div class="chat-header-premium">
                 <div class="flex items-center justify-between mb-3">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_8px_rgba(0,159,227,0.4)]"></span>
-                        <span class="text-[10px] font-black text-primary uppercase tracking-[0.2em]">Online Support</span>
+                    <div class="chat-status">
+                        <div class="status-dot"></div>
+                        <span class="chat-header-title">ONLINE SUPPORT</span>
                     </div>
-                    <button @click="open = false" aria-label="Tutup Panel Chat" class="text-slate-300 hover:text-slate-600 transition-colors">
+                    <button id="closeChatBtn" class="close-chat-btn">
                         <span class="material-symbols-outlined text-lg notranslate" translate="no">close</span>
                     </button>
                 </div>
-                <h4 class="text-lg font-bold text-slate-900 leading-snug">
-                    Halo! Ada yang bisa kami bantu untuk bisnis Anda hari ini?
-                </h4>
+                <div class="flex items-center gap-3">
+                    <div class="agent-avatar">
+                        <span>RD</span>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold text-base">Tim Rakira Digital</h4>
+                        <p class="text-white/80 text-xs">Siap membantu kebutuhan digital Anda</p>
+                    </div>
+                </div>
             </div>
 
-            <!-- Body (Form) -->
-            <div class="p-6 bg-slate-50/20">
-                <form action="{{ route('konsultasi.store') }}" method="POST" class="space-y-3.5">
+            <div class="chat-form-container">
+                <form action="{{ route('konsultasi.store') }}" method="POST" id="consultationFormWidget">
                     @csrf
                     <input type="hidden" name="sender_email" value="chat-widget@rakira.com">
                     <input type="hidden" name="service" value="Live Chat Consultation">
 
-                    <input type="text" name="sender_name" required placeholder="Nama Lengkap" 
-                           class="w-full rounded-xl border-slate-200 bg-white px-4 py-3 text-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-slate-400">
+                    <div class="form-field">
+                        <label class="form-label">Nama Lengkap</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon-simple material-symbols-outlined notranslate" translate="no">person</span>
+                            <input type="text" name="sender_name" required placeholder="Nama lengkap" class="chat-input" id="chatName">
+                        </div>
+                    </div>
 
-                    <input type="text" name="phone" required placeholder="No. WhatsApp (0812...)" 
-                           class="w-full rounded-xl border-slate-200 bg-white px-4 py-3 text-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all placeholder:text-slate-400">
+                    <div class="form-field">
+                        <label class="form-label">WhatsApp</label>
+                        <div class="input-with-icon">
+                            <span class="input-icon-simple material-symbols-outlined notranslate" translate="no">phone</span>
+                            <input type="text" name="phone" required placeholder="0812-3456-7890" class="chat-input" id="chatPhone">
+                        </div>
+                    </div>
 
-                    <textarea name="message_body" required placeholder="Tulis pertanyaan Anda..." rows="3"
-                              class="w-full rounded-xl border-slate-200 bg-white px-4 py-3 text-sm focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all resize-none placeholder:text-slate-400"></textarea>
+                    <div class="form-field">
+                        <label class="form-label">Pesan</label>
+                        <div class="input-with-icon">
+                            <span class="textarea-icon-simple material-symbols-outlined notranslate" translate="no">chat</span>
+                            <textarea name="message_body" required placeholder="Tulis pertanyaan Anda..." rows="3" class="chat-input" id="chatMessage"></textarea>
+                        </div>
+                    </div>
 
-                    <button type="submit" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl shadow-lg hover:bg-primary transition-all flex items-center justify-center gap-2 group">
-                        <span class="text-sm">Kirim ke Admin</span>
-                        <span class="material-symbols-outlined text-sm group-hover:translate-x-0.5 transition-transform notranslate" translate="no">send</span>
+                    <button type="submit" class="submit-chat-btn">
+                        <span>Kirim Pesan</span>
+                        <span class="material-symbols-outlined text-sm notranslate" translate="no">send</span>
                     </button>
                 </form>
 
-                <div class="mt-6 flex flex-col items-center gap-3">
-                    <p class="text-[9px] text-slate-400 font-black uppercase tracking-[0.2em]">Atau Hubungi Langsung</p>
-                    <div class="grid grid-cols-2 gap-2 w-full">
-                        <a href="https://wa.me/{{ $settings->phone ?? '6287868184742' }}" target="_blank" class="flex items-center justify-center gap-2 py-2.5 bg-white border border-slate-100 rounded-lg text-[11px] font-bold text-slate-600 hover:border-green-500 hover:text-green-600 transition-all shadow-sm">
-                            <img src="https://cdn-icons-png.flaticon.com/512/124/124034.png" class="w-3.5 h-3.5" alt="WA"> WhatsApp
-                        </a>
-                        <a href="https://www.instagram.com/rakiradigital?igsh=MWRpdnR3Ym8wazMxbQ%3D%3D&utm_source=qr" target="_blank" class="flex items-center justify-center gap-2 py-2.5 bg-white border border-slate-100 rounded-lg text-[11px] font-bold text-slate-600 hover:border-pink-500 hover:text-pink-600 transition-all shadow-sm">
-                            <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" class="w-3.5 h-3.5" alt="IG"> Instagram
-                        </a>
-                    </div>
+                <div class="divider-custom">
+                    <div class="divider-line"></div>
+                    <span>atau hubungi langsung</span>
+                    <div class="divider-line"></div>
+                </div>
+
+                <div class="social-chat-links">
+                    <a href="https://wa.me/{{ $settings->phone ?? '6287868184742' }}" target="_blank" class="social-chat-btn">
+                        <span class="material-symbols-outlined text-sm notranslate" translate="no">chat</span>
+                        <span>WhatsApp</span>
+                    </a>
+                    <a href="https://www.instagram.com/rakiradigital" target="_blank" class="social-chat-btn">
+                        <span class="material-symbols-outlined text-sm notranslate" translate="no">photo_camera</span>
+                        <span>Instagram</span>
+                    </a>
                 </div>
             </div>
         </div>
-
-        <!-- Toggle Button -->
-        <button @click="open = !open; showTooltip = false" aria-label="Buka Chat Layanan"
-                class="w-16 h-16 rounded-full bg-primary text-white shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 relative overflow-hidden group">
-            <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-            <span class="material-symbols-outlined text-2xl relative z-10 notranslate" translate="no" x-show="!open">chat</span>
-            <span class="material-symbols-outlined text-2xl relative z-10 notranslate" translate="no" x-show="open">close</span>
-        </button>
     </div>
 
+    <div id="notificationToast" class="notification-toast"></div>
+
     @stack('scripts')
+    
+    <script>
+        // DOM Elements
+        const floatingNavbar = document.getElementById('floatingNavbar');
+        const progressBar = document.getElementById('progressBar');
+        const backToTop = document.getElementById('backToTop');
+        
+        // Scroll handling: navbar, progress, back-to-top
+        window.addEventListener('scroll', () => {
+            // Navbar shrink
+            if (window.scrollY > 30) {
+                floatingNavbar?.classList.add('scrolled');
+            } else {
+                floatingNavbar?.classList.remove('scrolled');
+            }
+            
+            // Progress bar
+            const winScroll = document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            if (progressBar) progressBar.style.width = scrolled + '%';
+            
+            // Back to top button visibility
+            if (window.scrollY > 400) {
+                backToTop?.classList.add('show');
+            } else {
+                backToTop?.classList.remove('show');
+            }
+        });
+        
+        // Back to top click
+        backToTop?.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Mobile Menu
+        const menuToggle = document.getElementById('menuToggle');
+        const mobilePanel = document.getElementById('mobilePanel');
+        const mobileOverlay = document.getElementById('mobileOverlay');
+        const closePanelBtn = document.getElementById('closePanelBtn');
+        
+        function openMobileMenu() {
+            menuToggle?.classList.add('active');
+            mobilePanel?.classList.add('active');
+            mobileOverlay?.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeMobileMenu() {
+            menuToggle?.classList.remove('active');
+            mobilePanel?.classList.remove('active');
+            mobileOverlay?.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        menuToggle?.addEventListener('click', openMobileMenu);
+        mobileOverlay?.addEventListener('click', closeMobileMenu);
+        if (closePanelBtn) closePanelBtn.addEventListener('click', closeMobileMenu);
+        document.querySelectorAll('.mobile-link-floating').forEach(link => link.addEventListener('click', closeMobileMenu));
+        
+        // Chat Widget Logic
+        const chatButton = document.getElementById('chatButton');
+        const chatPanel = document.getElementById('chatPanel');
+        const closeChatBtn = document.getElementById('closeChatBtn');
+        const chatTooltip = document.getElementById('chatTooltip');
+        const chatIconSpan = document.getElementById('chatIcon');
+        const toastNotif = document.getElementById('notificationToast');
+        
+        function showToast(message, isError = false) {
+            if (!toastNotif) return;
+            toastNotif.textContent = message;
+            toastNotif.classList.add('show');
+            setTimeout(() => toastNotif.classList.remove('show'), 2800);
+        }
+        
+        function toggleChat() {
+            if (!chatPanel) return;
+            chatPanel.classList.toggle('active');
+            if (chatTooltip) chatTooltip.classList.remove('active');
+            if (chatPanel.classList.contains('active')) {
+                if (chatIconSpan) chatIconSpan.textContent = 'close';
+            } else {
+                if (chatIconSpan) chatIconSpan.textContent = 'chat';
+            }
+        }
+        
+        chatButton?.addEventListener('click', toggleChat);
+        closeChatBtn?.addEventListener('click', toggleChat);
+        
+        // Show tooltip after 2 seconds if panel not open
+        setTimeout(() => {
+            if (chatTooltip && !chatPanel?.classList.contains('active')) {
+                chatTooltip.classList.add('active');
+                setTimeout(() => chatTooltip?.classList.remove('active'), 5000);
+            }
+        }, 2000);
+        
+        // Form validation
+        const chatForm = document.getElementById('consultationFormWidget');
+        if (chatForm) {
+            chatForm.addEventListener('submit', function(e) {
+                const name = document.getElementById('chatName')?.value.trim();
+                const phone = document.getElementById('chatPhone')?.value.trim();
+                const msg = document.getElementById('chatMessage')?.value.trim();
+                if (!name || !phone || !msg) {
+                    e.preventDefault();
+                    showToast('Mohon lengkapi nama, WhatsApp, dan pesan', true);
+                    return;
+                }
+                showToast('Pesan terkirim. Tim kami akan segera merespon.');
+            });
+        }
+    </script>
 </body>
 
 </html>

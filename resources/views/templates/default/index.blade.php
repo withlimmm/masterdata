@@ -193,7 +193,7 @@
         <div class="marquee-wrapper relative flex pt-16 pb-4">
             <div class="marquee-track flex gap-16 items-center">
                 @php 
-                    $row1 = $client_logos->split(2)[0] ?? collect(); 
+                    $row1 = $client_logos->split(2)->first() ?? collect(); 
                     $displayRow1 = $row1->concat($row1)->concat($row1)->concat($row1); 
                 @endphp
                 @foreach ($displayRow1 as $client)
@@ -331,7 +331,7 @@
     <div class="content-container">
         <div class="text-center max-w-2xl mx-auto space-y-3 mb-14" data-aos>
             <span class="section-kicker">{{ __('Layanan Rakira Digital') }}</span>
-            <h2 class="section-title">{{ __('Solusi End-to-End untuk Anda') }}</h2>
+            <h2 class="section-title">{{ __('Solusi Bisnis untuk Anda') }}</h2>
             <p class="section-subtitle mx-auto">{{ __('Klik layanan untuk melihat detail dan langsung chat via WhatsApp.') }}</p>
         </div>
         
