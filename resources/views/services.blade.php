@@ -1,7 +1,40 @@
 @extends('layouts.main')
 
-@section('title', __('Layanan Profesional - Rakira Digital Nusantara'))
-@section('meta_description', __('Layanan pengembangan software kustom, pembuatan website premium, aplikasi mobile, dan optimasi digital dari Rakira Digital.'))
+@section('title', 'Layanan Digital Profesional - ' . ($settings->company_name ?? 'Rakira Digital') . ' | Software House Indonesia')
+@section('meta_description', 'Layanan pembuatan website company profile, aplikasi mobile Android iOS, web app kustom, desain UI/UX, dan konsultasi IT dari Rakira Digital. Solusi teknologi terpercaya untuk bisnis Indonesia.')
+@section('meta_keywords', 'layanan pembuatan website, jasa web developer indonesia, pembuatan aplikasi android, pembuatan aplikasi ios, software house tangerang, it consultant jakarta, jasa ui ux design, web app kustom, system informasi perusahaan, rakira digital layanan')
+
+@push('structured_data')
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "ItemList",
+  "name": "Layanan Digital Rakira Digital",
+  "description": "Daftar layanan digital profesional dari Rakira Digital Nusantara",
+  "url": "{{ url('/layanan') }}",
+  "numberOfItems": {{ $services->count() }},
+  "itemListElement": [
+    @foreach($services as $i => $service)
+    {
+      "@@type": "ListItem",
+      "position": {{ $i + 1 }},
+      "item": {
+        "@@type": "Service",
+        "name": "{{ addslashes(strip_tags(__t($service->title))) }}",
+        "description": "{{ addslashes(Str::limit(strip_tags(__t($service->short_description ?? '')), 150)) }}",
+        "url": "{{ url('/layanan/' . $service->slug) }}",
+        "provider": {
+          "@@type": "Organization",
+          "name": "{{ $settings->company_name ?? 'Rakira Digital Nusantara' }}"
+        },
+        "areaServed": "Indonesia"
+      }
+    }{{ !$loop->last ? ',' : '' }}
+    @endforeach
+  ]
+}
+</script>
+@endpush
 
 @section('content')
 <div class="bg-gradient-to-b from-white via-[#0a88b2]/5 to-white">

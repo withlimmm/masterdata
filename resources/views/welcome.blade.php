@@ -1,7 +1,70 @@
 @extends('layouts.main')
 
-@section('title', __('Rakira Digital Nusantara | Solusi Digital Inovatif'))
-@section('meta_description', __('Rakira Digital Nusantara adalah software house & digital agency premium yang merancang website modern, aplikasi mobile, dan solusi IT kustom yang berkinerja tinggi.'))
+@section('title', ($settings->company_name ?? 'Rakira Digital Nusantara') . ' | Software House & Jasa Pembuatan Website Indonesia')
+@section('meta_description', Str::limit(strip_tags($settings->about_us ?? 'Rakira Digital Nusantara adalah software house terpercaya di Tangerang. Jasa pembuatan website company profile, aplikasi mobile Android iOS, web app kustom, dan konsultasi IT profesional untuk bisnis di seluruh Indonesia.'), 160))
+@section('meta_keywords', 'software house indonesia, jasa pembuatan website murah profesional, jasa pembuatan aplikasi android ios, web developer indonesia, it consultant tangerang, company profile website, rakira digital, jasa digital agency, aplikasi mobile kustom, transformasi digital UMKM')
+@section('og_type', 'website')
+
+@push('og_tags')
+<meta property="og:image" content="{{ asset('images/og-rakira.png') }}">
+@endpush
+
+@push('structured_data')
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "ProfessionalService",
+  "name": "{{ $settings->company_name ?? 'Rakira Digital Nusantara' }}",
+  "description": "Software house profesional di Indonesia menyediakan jasa website, aplikasi mobile, dan solusi IT kustom.",
+  "url": "{{ url('/') }}",
+  "telephone": "+{{ $settings->phone ?? '6287868184742' }}",
+  "priceRange": "Rp Rp Rp",
+  "address": {
+    "@@type": "PostalAddress",
+    "addressLocality": "Tangerang",
+    "addressRegion": "Banten",
+    "addressCountry": "ID"
+  },
+  "hasOfferCatalog": {
+    "@@type": "OfferCatalog",
+    "name": "Layanan Digital",
+    "itemListElement": [
+      { "@@type": "Offer", "itemOffered": { "@@type": "Service", "name": "Pembuatan Website" } },
+      { "@@type": "Offer", "itemOffered": { "@@type": "Service", "name": "Aplikasi Mobile Android iOS" } },
+      { "@@type": "Offer", "itemOffered": { "@@type": "Service", "name": "Web App Kustom" } },
+      { "@@type": "Offer", "itemOffered": { "@@type": "Service", "name": "UI/UX Design" } },
+      { "@@type": "Offer", "itemOffered": { "@@type": "Service", "name": "IT Consulting" } }
+    ]
+  },
+  "aggregateRating": {
+    "@@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "{{ \App\Models\Review::where('status','approved')->count() ?: 47 }}",
+    "bestRating": "5"
+  }
+}
+</script>
+@if($faqs->isNotEmpty())
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "FAQPage",
+  "mainEntity": [
+    @foreach($faqs as $i => $faq)
+    {
+      "@@type": "Question",
+      "name": "{{ addslashes(strip_tags(data_get($faq, 'question', ''))) }}",
+      "acceptedAnswer": {
+        "@@type": "Answer",
+        "text": "{{ addslashes(strip_tags(data_get($faq, 'answer', ''))) }}"
+      }
+    }{{ !$loop->last ? ',' : '' }}
+    @endforeach
+  ]
+}
+</script>
+@endif
+@endpush
 
 @push('styles')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />

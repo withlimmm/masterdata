@@ -1,7 +1,35 @@
 @extends('layouts.main')
 
-@section('title', __('Tentang Kami - Rakira Digital Nusantara'))
-@section('meta_description', __('Kolektif profesional ahli teknologi, desainer, dan pengembang software Rakira Digital Nusantara yang berdedikasi menciptakan solusi IT terbaik.'))
+@section('title', 'Tentang Kami - ' . ($settings->company_name ?? 'Rakira Digital Nusantara') . ' | Software House Indonesia')
+@section('meta_description', 'Kenali tim profesional Rakira Digital Nusantara — software house terpercaya di Tangerang yang berdedikasi menghadirkan solusi teknologi terbaik untuk bisnis Indonesia sejak 2020.')
+@section('meta_keywords', 'tentang rakira digital, profil perusahaan software house, tim developer indonesia, software house tangerang banten, visi misi perusahaan IT, digital agency indonesia')
+
+@push('structured_data')
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "AboutPage",
+  "name": "Tentang {{ $settings->company_name ?? 'Rakira Digital Nusantara' }}",
+  "description": "Software house profesional di Tangerang, Indonesia.",
+  "url": "{{ url('/tentang-kami') }}",
+  "mainEntity": {
+    "@@type": "Organization",
+    "@@id": "{{ url('/') }}/#organization",
+    "name": "{{ $settings->company_name ?? 'Rakira Digital Nusantara' }}",
+    "member": [
+      @foreach($teams as $i => $member)
+      {
+        "@@type": "Person",
+        "name": "{{ $member->name }}",
+        "jobTitle": "{{ __t($member->position) }}",
+        "worksFor": { "@@id": "{{ url('/') }}/#organization" }
+      }{{ !$loop->last ? ',' : '' }}
+      @endforeach
+    ]
+  }
+}
+</script>
+@endpush
 
 @section('content')
 <div class="bg-gradient-to-b from-white via-[#0a88b2]/5 to-white pt-16 pb-20 overflow-x-hidden">

@@ -1,8 +1,32 @@
 @extends('layouts.main')
 
-@section('title', __('Blog & Wawasan Digital - Rakira Digital'))
-@section('meta_description', __('Eksplorasi wawasan teknologi terkini, tips bisnis, update tren web & mobile development dari tim ahli Rakira Digital.'))
-@section('meta_keywords', __('cara membuat website bisnis, biaya pembuatan aplikasi mobile, tren desain web terbaru, blog teknologi, rakira digital'))
+@section('title', 'Blog & Wawasan Digital - ' . ($settings->company_name ?? 'Rakira Digital') . ' | Tips Teknologi & Bisnis')
+@section('meta_description', 'Baca artikel dan tips terbaru seputar web development, aplikasi mobile, transformasi digital, dan strategi bisnis teknologi dari tim ahli Rakira Digital.')
+@section('meta_keywords', 'blog teknologi indonesia, tips pembuatan website, cara memilih software house, tren aplikasi mobile 2026, digital marketing bisnis, rakira digital blog, web development tutorial')
+
+@push('structured_data')
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "Blog",
+  "name": "Blog Rakira Digital",
+  "description": "Wawasan teknologi, tips bisnis, dan update tren digital dari Rakira Digital.",
+  "url": "{{ url('/blog') }}",
+  "publisher": { "@id": "{{ url('/') }}/#organization" },
+  "blogPost": [
+    @foreach($articles->take(5) as $i => $article)
+    {
+      "@@type": "BlogPosting",
+      "headline": "{{ addslashes(strip_tags(__t($article->title))) }}",
+      "url": "{{ url('/blog/' . $article->slug) }}",
+      "datePublished": "{{ ($article->published_at ?? $article->created_at)->toIso8601String() }}",
+      "author": { "@@type": "Person", "name": "{{ $article->author->name ?? 'Tim Rakira' }}" }
+    }{{ !$loop->last ? ',' : '' }}
+    @endforeach
+  ]
+}
+</script>
+@endpush
 
 @section('content')
 <div class="pt-24 pb-section-padding min-h-screen bg-slate-50/50">

@@ -29,6 +29,15 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\TeamController;
+use App\Http\Controllers\SitemapController;
+
+/*
+|--------------------------------------------------------------------------
+| SEO: Sitemap Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap.index');
+Route::get('/sitemap-images.xml', [SitemapController::class, 'images'])->name('sitemap.images');
 
 /*
 |--------------------------------------------------------------------------
@@ -263,6 +272,17 @@ Route::get('/dashboard', function () {
     return redirect()->route('admin.dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Legal Pages
+Route::get('/privacy-policy', function () {
+    $settings = \App\Models\CompanySetting::first();
+    return view('pages.privacy', compact('settings'));
+})->name('privacy');
+
+Route::get('/terms-of-service', function () {
+    $settings = \App\Models\CompanySetting::first();
+    return view('pages.terms', compact('settings'));
+})->name('terms');
+
 /*
 |--------------------------------------------------------------------------
 | Admin CMS Routes (Protected by Auth)
@@ -296,6 +316,19 @@ Route::post('/konsultasi', function (Request $request) {
         'message_body' => 'nullable|string|max:1000',
     ]);
 
+    // Verify reCAPTCHA
+    if (config('services.recaptcha.secret')) {
+        $response = \Illuminate\Support\Facades\Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => config('services.recaptcha.secret'),
+            'response' => $request->input('g-recaptcha-response'),
+            'remoteip' => $request->ip()
+        ]);
+        
+        if (!$response->successful() || !$response->json('success') || $response->json('score') < 0.5) {
+            return redirect()->back()->with('error', 'Validasi keamanan (Anti-Spam) gagal. Silakan coba lagi.');
+        }
+    }
+
     $validated['subject'] = 'Konsultasi: ' . $validated['service'];
     $validated['message_body'] = $validated['message_body'] ?: 'Saya ingin konsultasi mengenai layanan ' . $validated['service'];
     $validated['status'] = 'unread';
@@ -311,6 +344,19 @@ Route::post('/review', function (Illuminate\Http\Request $request) {
         'rating' => 'required|integer|min:1|max:5',
         'comment' => 'required|string|max:1000',
     ]);
+
+    // Verify reCAPTCHA
+    if (config('services.recaptcha.secret')) {
+        $response = \Illuminate\Support\Facades\Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
+            'secret' => config('services.recaptcha.secret'),
+            'response' => $request->input('g-recaptcha-response'),
+            'remoteip' => $request->ip()
+        ]);
+        
+        if (!$response->successful() || !$response->json('success') || $response->json('score') < 0.5) {
+            return redirect()->back()->with('error', 'Validasi keamanan (Anti-Spam) gagal. Silakan coba lagi.');
+        }
+    }
 
     $validated['status'] = 'pending';
 

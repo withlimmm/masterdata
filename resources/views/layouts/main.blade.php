@@ -4,36 +4,275 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta name="google" content="notranslate">
-    <title>@yield('title', 'Rakira Digital Nusantara - Solusi Digital Inovatif')</title>
-    <meta name="description" content="@yield('meta_description', $settings->about_us ?? 'Solusi teknologi premium untuk bisnis modern. Pengembangan web, aplikasi kustom, dan transformasi digital yang scalable.')">
-    <meta name="keywords" content="@yield('meta_keywords', 'jasa pembuatan website company profile, jasa pembuatan aplikasi android ios, jasa pembuatan web app kustom, developer aplikasi mobile indonesia, software house indonesia, software house jakarta, software house tangerang, it consultant jakarta, konsultan teknologi informasi, jasa desain ui ux profesional, rakira digital')">
-    <link rel="canonical" href="{{ url()->current() }}">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <!-- Structured Data (JSON-LD) -->
+    {{-- ============================================================ --}}
+    {{-- SEO: Title & Primary Meta Tags --}}
+    {{-- ============================================================ --}}
+    @php
+        $pageTitle       = trim(strip_tags(View::yieldContent('title', ($settings->company_name ?? 'Rakira Digital Nusantara') . ' - Solusi Digital Inovatif')));
+        $pageDesc        = trim(strip_tags(View::yieldContent('meta_description', $settings->about_us ?? 'Jasa pembuatan website, aplikasi mobile, dan solusi digital profesional untuk bisnis modern di Indonesia. Dipercaya oleh 100+ klien.')));
+        $pageKeywords    = trim(strip_tags(View::yieldContent('meta_keywords', 'jasa pembuatan website, software house indonesia, jasa pembuatan aplikasi android ios, developer aplikasi mobile indonesia, website company profile profesional, jasa desain ui ux, it consultant jakarta, software house tangerang, rakira digital, transformasi digital')));
+        $pageImage       = View::yieldContent('og_image', (isset($settings) && $settings->og_image ? asset('storage/' . $settings->og_image) : asset('images/og-rakira.png')));
+        $pageType        = View::yieldContent('og_type', 'website');
+        $pageUrl         = url()->current();
+        $siteName        = $settings->company_name ?? 'Rakira Digital Nusantara';
+        $twitterHandle   = '@rakiradigital';
+        $pageLocale      = app()->getLocale() === 'en' ? 'en_US' : 'id_ID';
+        $pageLocaleAlt   = app()->getLocale() === 'en' ? 'id_ID' : 'en_US';
+    @endphp
+
+    <title>{{ $pageTitle }}</title>
+    <meta name="description" content="{{ Str::limit($pageDesc, 160) }}">
+    <meta name="keywords" content="{{ $pageKeywords }}">
+    <meta name="author" content="{{ $siteName }}">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="google" content="notranslate">
+    <meta name="revisit-after" content="7 days">
+    <meta name="language" content="{{ app()->getLocale() === 'en' ? 'English' : 'Indonesian' }}">
+    <meta name="rating" content="general">
+
+    {{-- Canonical & Alternate --}}
+    @php
+        $basePageUrl = url()->current();
+        $canonicalUrl = app()->getLocale() === 'en' ? $basePageUrl . '?lang=en' : $basePageUrl;
+    @endphp
+    <link rel="canonical" href="{{ $canonicalUrl }}">
+    <link rel="alternate" hreflang="id" href="{{ $basePageUrl }}">
+    <link rel="alternate" hreflang="en" href="{{ $basePageUrl }}?lang=en">
+    <link rel="alternate" hreflang="x-default" href="{{ $basePageUrl }}">
+
+    {{-- ============================================================ --}}
+    {{-- GEO: Geographic Meta Tags (for local SEO & GEO AI) --}}
+    {{-- ============================================================ --}}
+    <meta name="geo.region" content="ID-BT">
+    <meta name="geo.placename" content="Tangerang, Banten, Indonesia">
+    <meta name="geo.position" content="-6.1781;106.6298">
+    <meta name="ICBM" content="-6.1781, 106.6298">
+    <meta name="DC.title" content="{{ $pageTitle }}">
+    <meta name="DC.description" content="{{ Str::limit($pageDesc, 160) }}">
+    <meta name="DC.language" content="{{ app()->getLocale() }}">
+    <meta name="DC.coverage" content="Indonesia">
+
+    {{-- ============================================================ --}}
+    {{-- GEO: AI Generative Engine Optimization (GEO) Hints --}}
+    {{-- ============================================================ --}}
+    <meta name="classification" content="Business, Technology, Software Development">
+    <meta name="category" content="Software House, IT Services, Digital Agency">
+    <meta name="coverage" content="Indonesia, Southeast Asia">
+    <meta name="target" content="Bisnis, UMKM, Startup, Enterprise">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+
+    {{-- ============================================================ --}}
+    {{-- Open Graph (Facebook, LinkedIn, WhatsApp) --}}
+    {{-- ============================================================ --}}
+    <meta property="og:type" content="{{ $pageType }}">
+    <meta property="og:url" content="{{ $pageUrl }}">
+    <meta property="og:title" content="{{ $pageTitle }}">
+    <meta property="og:description" content="{{ Str::limit($pageDesc, 200) }}">
+    <meta property="og:image" content="{{ $pageImage }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="{{ $pageTitle }}">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:site_name" content="{{ $siteName }}">
+    <meta property="og:locale" content="{{ $pageLocale }}">
+    <meta property="og:locale:alternate" content="{{ $pageLocaleAlt }}">
+    @stack('og_tags')
+
+    {{-- ============================================================ --}}
+    {{-- Twitter Card --}}
+    {{-- ============================================================ --}}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="{{ $twitterHandle }}">
+    <meta name="twitter:creator" content="{{ $twitterHandle }}">
+    <meta name="twitter:title" content="{{ $pageTitle }}">
+    <meta name="twitter:description" content="{{ Str::limit($pageDesc, 200) }}">
+    <meta name="twitter:image" content="{{ $pageImage }}">
+    <meta name="twitter:image:alt" content="{{ $pageTitle }}">
+
+    {{-- ============================================================ --}}
+    {{-- Google Search Console Verification --}}
+    {{-- Replace YOUR_VERIFICATION_CODE with your actual code from GSC --}}
+    {{-- ============================================================ --}}
+    @if(config('seo.google_site_verification'))
+        <meta name="google-site-verification" content="{{ config('seo.google_site_verification') }}">
+    @endif
+    @if(config('seo.bing_site_verification'))
+        <meta name="msvalidate.01" content="{{ config('seo.bing_site_verification') }}">
+    @endif
+
+    {{-- ============================================================ --}}
+    {{-- Structured Data JSON-LD (Organization + WebSite + LocalBusiness) --}}
+    {{-- ============================================================ --}}
     <script type="application/ld+json">
     {
       "@@context": "https://schema.org",
-      "@@type": "Organization",
-      "name": "{{ $settings->company_name ?? 'Rakira Digital Nusantara' }}",
-      "alternateName": "Rakira Digital",
-      "url": "{{ url('/') }}",
-      "logo": "{{ isset($settings) && $settings->logo_path ? asset('storage/' . $settings->logo_path) : asset('images/logo-rakira.png') }}",
-      "description": "{{ $settings->about_us ?? 'Solusi teknologi premium untuk bisnis modern. Pengembangan web, aplikasi kustom, dan transformasi digital yang scalable.' }}",
-      "contactPoint": {
-        "@@type": "ContactPoint",
-        "telephone": "+{{ $settings->phone ?? '6287868184742' }}",
-        "contactType": "customer service",
-        "areaServed": "ID",
-        "availableLanguage": ["id", "en"]
-      },
-      "sameAs": [
-        "https://www.instagram.com/rakiradigital"
+      "@@graph": [
+        {
+          "@@type": "Organization",
+          "@@id": "{{ url('/') }}/#organization",
+          "name": "{{ $settings->company_name ?? 'Rakira Digital Nusantara' }}",
+          "alternateName": ["Rakira Digital", "Rakira"],
+          "url": "{{ url('/') }}",
+          "logo": {
+            "@@type": "ImageObject",
+            "url": "{{ isset($settings) && $settings->logo_path ? asset('storage/' . $settings->logo_path) : asset('images/logo-rakira.png') }}",
+            "width": 200,
+            "height": 60
+          },
+          "description": "{{ Str::limit($settings->about_us ?? 'Jasa pembuatan website profesional, aplikasi mobile, dan solusi IT untuk bisnis Indonesia.', 200) }}",
+          "foundingDate": "2020",
+          "numberOfEmployees": { "@@type": "QuantitativeValue", "value": 15 },
+          "areaServed": ["Indonesia", "Southeast Asia"],
+          "serviceArea": {
+            "@@type": "GeoCircle",
+            "geoMidpoint": { "@@type": "GeoCoordinates", "latitude": -6.1781, "longitude": 106.6298 },
+            "geoRadius": "500000"
+          },
+          "contactPoint": [
+            {
+              "@@type": "ContactPoint",
+              "telephone": "+{{ $settings->phone ?? '6287868184742' }}",
+              "contactType": "customer service",
+              "areaServed": "ID",
+              "availableLanguage": ["id", "en"],
+              "hoursAvailable": {
+                "@@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+                "opens": "09:00",
+                "closes": "17:00"
+              }
+            }
+          ],
+          "address": {
+            "@@type": "PostalAddress",
+            "streetAddress": "{{ $settings->address ?? 'Tangerang' }}",
+            "addressLocality": "Tangerang",
+            "addressRegion": "Banten",
+            "postalCode": "15111",
+            "addressCountry": "ID"
+          },
+          "email": "{{ $settings->email ?? 'info@rakiradigital.com' }}",
+          "sameAs": [
+            "https://www.instagram.com/rakiradigital",
+            "https://wa.me/{{ $settings->phone ?? '6287868184742' }}"
+          ]
+        },
+        {
+          "@@type": "LocalBusiness",
+          "@@id": "{{ url('/') }}/#localbusiness",
+          "name": "{{ $settings->company_name ?? 'Rakira Digital Nusantara' }}",
+          "image": "{{ isset($settings) && $settings->logo_path ? asset('storage/' . $settings->logo_path) : asset('images/logo-rakira.png') }}",
+          "url": "{{ url('/') }}",
+          "telephone": "+{{ $settings->phone ?? '6287868184742' }}",
+          "email": "{{ $settings->email ?? 'info@rakiradigital.com' }}",
+          "priceRange": "Rp Rp Rp",
+          "openingHours": "Mo-Fr 09:00-17:00",
+          "address": {
+            "@@type": "PostalAddress",
+            "streetAddress": "{{ $settings->address ?? 'Tangerang' }}",
+            "addressLocality": "Tangerang",
+            "addressRegion": "Banten",
+            "addressCountry": "ID"
+          },
+          "geo": {
+            "@@type": "GeoCoordinates",
+            "latitude": -6.1781,
+            "longitude": 106.6298
+          },
+          "hasMap": "https://maps.google.com/?q=Tangerang,Banten,Indonesia",
+          "paymentAccepted": "Transfer Bank, Dana, OVO, GoPay",
+          "currenciesAccepted": "IDR"
+        },
+        {
+          "@@type": "WebSite",
+          "@@id": "{{ url('/') }}/#website",
+          "url": "{{ url('/') }}",
+          "name": "{{ $siteName }}",
+          "description": "{{ Str::limit($pageDesc, 160) }}",
+          "publisher": { "@@id": "{{ url('/') }}/#organization" },
+          "inLanguage": ["id-ID", "en-US"],
+          "potentialAction": {
+            "@@type": "SearchAction",
+            "target": {
+              "@@type": "EntryPoint",
+              "urlTemplate": "{{ url('/blog') }}?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@@type": "WebPage",
+          "@@id": "{{ $pageUrl }}/#webpage",
+          "url": "{{ $pageUrl }}",
+          "name": "{{ $pageTitle }}",
+          "description": "{{ Str::limit($pageDesc, 160) }}",
+          "isPartOf": { "@@id": "{{ url('/') }}/#website" },
+          "about": { "@@id": "{{ url('/') }}/#organization" },
+          "inLanguage": "{{ $pageLocale }}",
+          "dateModified": "{{ now()->toIso8601String() }}"
+        }
       ]
     }
     </script>
+    @stack('structured_data')
 
-    <!-- Fonts -->
+    {{-- ============================================================ --}}
+    {{-- Google Tag Manager (GTM) - loads GA4 + other tags --}}
+    {{-- Replace GTM-XXXXXXX with your actual GTM container ID --}}
+    {{-- ============================================================ --}}
+    @php
+        $ga4_id = (isset($settings) && $settings->google_analytics_id) ? $settings->google_analytics_id : config('seo.ga4_id');
+        $fb_pixel_id = (isset($settings) && $settings->facebook_pixel_id) ? $settings->facebook_pixel_id : null;
+    @endphp
+
+    @if(config('seo.gtm_id'))
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','{{ config("seo.gtm_id") }}');</script>
+    @elseif($ga4_id)
+    {{-- Direct GA4 (if not using GTM) --}}
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $ga4_id }}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '{{ $ga4_id }}', {
+        page_title: '{{ $pageTitle }}',
+        page_location: '{{ $pageUrl }}',
+        send_page_view: true
+      });
+    </script>
+    @endif
+
+    {{-- Facebook Pixel --}}
+    @if($fb_pixel_id)
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '{{ $fb_pixel_id }}');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ $fb_pixel_id }}&ev=PageView&noscript=1"/></noscript>
+    @endif
+
+    {{-- Favicon --}}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo-rakira.png') }}">
+    <meta name="theme-color" content="#0a88b2">
+    <meta name="msapplication-TileColor" content="#0a88b2">
+
+    {{-- Fonts (preload for performance) --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
@@ -933,6 +1172,11 @@
 </head>
 
 <body class="antialiased bg-white">
+    {{-- Google Tag Manager (noscript) --}}
+    @if(config('seo.gtm_id'))
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ config('seo.gtm_id') }}"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    @endif
 
     <!-- Progress Bar -->
     <div class="progress-bar-floating" id="progressBar"></div>
@@ -1065,11 +1309,30 @@
                     </p>
                     
                     <div class="flex gap-3 mt-6">
-                        <a href="https://www.instagram.com/rakiradigital" target="_blank" class="social-icon">
+                        @if(isset($settings) && $settings->instagram_url)
+                        <a href="{{ $settings->instagram_url }}" target="_blank" class="social-icon">
                             <svg class="w-5 h-5 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zM5.838 12a6.162 6.162 0 1112.324 0 6.162 6.162 0 01-12.324 0zM12 16a4 4 0 110-8 4 4 0 010 8zm4.965-10.405a1.44 1.44 0 112.881.001 1.44 1.44 0 01-2.881-.001z"/>
                             </svg>
                         </a>
+                        @endif
+                        
+                        @if(isset($settings) && $settings->facebook_url)
+                        <a href="{{ $settings->facebook_url }}" target="_blank" class="social-icon">
+                            <svg class="w-5 h-5 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                        @endif
+
+                        @if(isset($settings) && $settings->linkedin_url)
+                        <a href="{{ $settings->linkedin_url }}" target="_blank" class="social-icon">
+                            <svg class="w-5 h-5 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                        @endif
+
                         <a href="https://wa.me/{{ $settings->phone ?? '6287868184742' }}" target="_blank" class="social-icon">
                             <svg class="w-5 h-5 text-slate-400" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12.032 1.963c-5.524 0-10 4.476-10 10 0 1.783.476 3.46 1.308 4.918L1.99 21.01l4.184-1.318a9.954 9.954 0 004.858 1.278c5.524 0 10-4.476 10-10s-4.476-10-10-10zm0 18.5c-1.605 0-3.12-.43-4.441-1.238l-.318-.192-2.86.902.974-2.666-.226-.33a8.508 8.508 0 01-1.331-4.476c0-4.688 3.812-8.5 8.5-8.5s8.5 3.812 8.5 8.5-3.812 8.5-8.5 8.5zm4.849-6.824c-.266-.133-1.579-.779-1.825-.868-.246-.089-.425-.133-.604.133-.179.266-.697.868-.854 1.046-.157.178-.315.2-.58.067-.266-.133-1.12-.413-2.133-1.318-.789-.705-1.322-1.576-1.477-1.842-.155-.267-.016-.411.117-.544.119-.119.267-.311.4-.467.133-.156.178-.267.267-.445.089-.178.044-.334-.022-.467-.067-.133-.604-1.456-.828-1.993-.218-.523-.44-.452-.604-.46l-.52-.008c-.178 0-.467.066-.711.333-.244.267-.933.911-.933 2.222 0 1.311.955 2.578 1.088 2.756.133.178 1.88 2.869 4.553 4.022.636.274 1.133.437 1.52.56.639.2 1.22.171 1.68.103.514-.076 1.58-.646 1.802-1.27.222-.624.222-1.158.156-1.27-.067-.111-.244-.178-.51-.311z"/>
@@ -1131,8 +1394,8 @@
                     &copy; {{ date('Y') }} {{ $settings->company_name ?? 'Rakira Digital Nusantara' }}. All rights reserved.
                 </div>
                 <div class="flex gap-6">
-                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
-                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                    <a href="{{ route('privacy') }}" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="{{ route('terms') }}" class="hover:text-white transition-colors">Terms of Service</a>
                 </div>
             </div>
         </div>
@@ -1237,7 +1500,13 @@
     <div id="notificationToast" class="notification-toast"></div>
 
     @stack('scripts')
-    
+
+    {{-- Google Tag Manager (noscript) fallback --}}
+    @if(config('seo.gtm_id'))
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ config('seo.gtm_id') }}"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    @endif
+
     <script>
         // DOM Elements
         const floatingNavbar = document.getElementById('floatingNavbar');
@@ -1350,6 +1619,39 @@
             });
         }
     </script>
+
+    {{-- Google reCAPTCHA v3 Anti-Spam (Invisible) --}}
+    @if(config('services.recaptcha.site_key'))
+    <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const siteKey = '{{ config("services.recaptcha.site_key") }}';
+            const forms = document.querySelectorAll('form[method="POST"]');
+            
+            forms.forEach(form => {
+                // Jangan protect form logout/delete admin
+                if(form.action.includes('logout') || form.querySelector('input[name="_method"]')) return;
+                
+                form.addEventListener('submit', function(e) {
+                    if (!form.dataset.recaptchaProcessed) {
+                        e.preventDefault();
+                        grecaptcha.ready(function() {
+                            grecaptcha.execute(siteKey, {action: 'submit'}).then(function(token) {
+                                let input = document.createElement('input');
+                                input.type = 'hidden';
+                                input.name = 'g-recaptcha-response';
+                                input.value = token;
+                                form.appendChild(input);
+                                form.dataset.recaptchaProcessed = 'true';
+                                form.submit();
+                            });
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    @endif
 </body>
 
 </html>

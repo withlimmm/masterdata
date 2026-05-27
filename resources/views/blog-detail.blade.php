@@ -1,8 +1,63 @@
 @extends('layouts.main')
 
-@section('title', __t($article->title) . ' - Rakira Digital Blog')
-@section('meta_description', \Illuminate\Support\Str::limit(strip_tags(__t($article->content)), 150))
-@section('meta_keywords', __t($article->category->name ?? 'Update') . ', ' . __t($article->title))
+@section('title', Str::limit(strip_tags(__t($article->title)), 60) . ' - Rakira Digital Blog')
+@section('meta_description', Str::limit(strip_tags(__t($article->excerpt ?? $article->content)), 155))
+@section('meta_keywords', implode(', ', array_filter([
+    __t($article->category->name ?? ''),
+    'blog', 'rakira digital', 'tips digital', 'software house indonesia'
+])))
+@section('og_type', 'article')
+
+@push('og_tags')
+@if($article->cover_image)
+<meta property="og:image" content="{{ asset('storage/' . $article->cover_image) }}">
+@endif
+<meta property="article:published_time" content="{{ ($article->published_at ?? $article->created_at)->toIso8601String() }}">
+<meta property="article:modified_time" content="{{ $article->updated_at->toIso8601String() }}">
+<meta property="article:author" content="{{ $article->author->name ?? 'Rakira Digital' }}">
+<meta property="article:section" content="{{ __t($article->category->name ?? 'Technology') }}">
+@endpush
+
+@push('structured_data')
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "BlogPosting",
+  "headline": "{{ addslashes(strip_tags(__t($article->title))) }}",
+  "description": "{{ addslashes(Str::limit(strip_tags(__t($article->excerpt ?? $article->content)), 155)) }}",
+  "image": [
+    @if($article->cover_image)
+    "{{ asset('storage/' . $article->cover_image) }}"
+    @else
+    "{{ asset('images/og-rakira.png') }}"
+    @endif
+  ],
+  "datePublished": "{{ ($article->published_at ?? $article->created_at)->toIso8601String() }}",
+  "dateModified": "{{ $article->updated_at->toIso8601String() }}",
+  "author": {
+    "@@type": "Person",
+    "name": "{{ $article->author->name ?? 'Tim Rakira Digital' }}",
+    "url": "{{ url('/tentang-kami') }}"
+  },
+  "publisher": {
+    "@@type": "Organization",
+    "name": "Rakira Digital Nusantara",
+    "logo": {
+      "@@type": "ImageObject",
+      "url": "{{ asset('images/logo-rakira.png') }}"
+    }
+  },
+  "mainEntityOfPage": {
+    "@@type": "WebPage",
+    "@@id": "{{ url()->current() }}"
+  },
+  "articleSection": "{{ __t($article->category->name ?? 'Technology') }}",
+  "inLanguage": "{{ app()->getLocale() }}-ID",
+  "wordCount": {{ str_word_count(strip_tags(__t($article->content))) }},
+  "url": "{{ url()->current() }}"
+}
+</script>
+@endpush
 
 @section('content')
 <div class="pt-24 bg-white min-h-screen">

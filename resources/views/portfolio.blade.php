@@ -1,7 +1,31 @@
 @extends('layouts.main')
 
-@section('title', __('Portofolio - Rakira Digital Nusantara'))
-@section('meta_description', __('Galeri karya dan proyek digital terbaik dari Rakira Digital Nusantara, mencakup pengembangan web, aplikasi mobile, UI/UX, dan solusi IT bisnis.'))
+@section('title', 'Portofolio Proyek Digital - ' . ($settings->company_name ?? 'Rakira Digital') . ' | Karya Terbaik Software House Indonesia')
+@section('meta_description', 'Galeri portofolio proyek digital terbaik Rakira Digital: website company profile, aplikasi mobile, sistem informasi, dan UI/UX design. Lihat hasil nyata yang telah kami wujudkan untuk klien.')
+@section('meta_keywords', 'portofolio software house indonesia, contoh website company profile, contoh aplikasi android ios, proyek web development, karya digital agency, rakira digital portofolio, hasil kerja developer indonesia')
+
+@push('structured_data')
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "CollectionPage",
+  "name": "Portofolio Digital Rakira",
+  "description": "Galeri karya dan proyek digital terbaik dari Rakira Digital.",
+  "url": "{{ url('/portofolio') }}",
+  "hasPart": [
+    @foreach($portfolios->take(10) as $i => $portfolio)
+    {
+      "@@type": "CreativeWork",
+      "name": "{{ addslashes(strip_tags(__t($portfolio->project_name))) }}",
+      "description": "{{ addslashes(Str::limit(strip_tags(__t($portfolio->description ?? '')), 120)) }}",
+      "url": "{{ url('/portofolio/' . $portfolio->slug) }}",
+      "creator": { "@id": "{{ url('/') }}/#organization" }
+    }{{ !$loop->last ? ',' : '' }}
+    @endforeach
+  ]
+}
+</script>
+@endpush
 
 @section('content')
 <div class="pt-24 min-h-screen bg-surface">

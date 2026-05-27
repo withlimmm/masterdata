@@ -25,6 +25,12 @@ class SettingController extends Controller
             'vision' => 'nullable|string',
             'mission' => 'nullable|string',
             'motto' => 'nullable|string',
+            'google_analytics_id' => 'nullable|string|max:100',
+            'facebook_pixel_id' => 'nullable|string|max:100',
+            'instagram_url' => 'nullable|url|max:255',
+            'linkedin_url' => 'nullable|url|max:255',
+            'facebook_url' => 'nullable|url|max:255',
+            'google_maps_iframe' => 'nullable|string',
         ]);
 
         $setting = CompanySetting::first();
