@@ -18,6 +18,11 @@ class TenantMiddleware
     {
         $host = $request->getHost();
 
+        // Fix: Hapus 'www.' agar domain dengan atau tanpa www tetap terdeteksi
+        if (str_starts_with($host, 'www.')) {
+            $host = substr($host, 4);
+        }
+
         // Jika host adalah local/testing, pakai fallback agar web tidak error
         if (in_array($host, ['localhost', '127.0.0.1', '::1']) || str_ends_with($host, '.test')) {
             $company = Company::where('company_domain', $host)->first() ?? Company::first();
