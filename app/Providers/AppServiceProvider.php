@@ -44,7 +44,7 @@ class AppServiceProvider extends ServiceProvider
 
             if (Schema::hasTable('company_settings')) {
                 View::composer('*', function ($view) {
-                    $settings = \App\Models\CompanySetting::first() ?? new \App\Models\CompanySetting();
+                    $settings = (app()->bound("tenant") ? app("tenant")->config : \App\Models\CompanyConfig::first()) ?? new \App\Models\CompanyConfig();
                     $view->with('settings', $settings);
                 });
             }

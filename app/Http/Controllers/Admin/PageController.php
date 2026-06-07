@@ -70,7 +70,7 @@ class PageController extends Controller
     }
     public function about()
     {
-        $companySetting = \App\Models\CompanySetting::first();
+        $companySetting = (app()->bound("tenant") ? app("tenant")->config : \App\Models\CompanyConfig::first());
         $teams = \App\Models\Team::all(); // jika ada model Team
         return view('about', compact('companySetting', 'teams'));
     }

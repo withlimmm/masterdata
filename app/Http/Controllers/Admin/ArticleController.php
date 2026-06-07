@@ -38,7 +38,7 @@ class ArticleController extends Controller
         $validated['content'] = strip_tags($validated['content'], '<h1><h2><h3><h4><h5><h6><p><br><a><b><i><strong><em><ul><ol><li><blockquote><img><table><thead><tbody><tr><th><td>');
 
         if ($request->hasFile('cover_image')) {
-            $path = $request->file('cover_image')->store('articles', 'public');
+            $path = $request->file('cover_image')->store(tenant_path('articles'), 'public');
             $validated['cover_image'] = $path;
         }
 
@@ -75,7 +75,7 @@ class ArticleController extends Controller
             if ($article->cover_image) {
                 Storage::disk('public')->delete($article->cover_image);
             }
-            $path = $request->file('cover_image')->store('articles', 'public');
+            $path = $request->file('cover_image')->store(tenant_path('articles'), 'public');
             $validated['cover_image'] = $path;
         }
 

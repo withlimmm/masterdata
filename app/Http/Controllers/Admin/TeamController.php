@@ -33,7 +33,7 @@ class TeamController extends Controller
 
         if ($request->hasFile('photo')) {
             // Simpan foto ke folder storage/app/public/teams
-            $data['photo'] = $request->file('photo')->store('teams', 'public');
+            $data['photo'] = $request->file('photo')->store(tenant_path('teams'), 'public');
         }
 
         Team::create($data);
@@ -60,7 +60,7 @@ class TeamController extends Controller
             if ($team->photo) {
                 Storage::disk('public')->delete($team->photo);
             }
-            $data['photo'] = $request->file('photo')->store('teams', 'public');
+            $data['photo'] = $request->file('photo')->store(tenant_path('teams'), 'public');
         }
 
         $team->update($data);

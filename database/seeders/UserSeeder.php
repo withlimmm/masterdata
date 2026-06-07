@@ -10,6 +10,8 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
+        $rakira = \App\Models\Company::where('company_code', 'RAKIRA')->first();
+
         // Buat Super Admin
         User::updateOrCreate(
             ['email' => 'admin@rakiradigital.com'],
@@ -17,6 +19,7 @@ class UserSeeder extends Seeder
                 'name' => 'Super Admin Rakira',
                 'password' => Hash::make('password123'),
                 'role' => 'super_admin', // Sesuai migration
+                'company_id' => $rakira?->id,
             ]
         );
 
@@ -27,6 +30,7 @@ class UserSeeder extends Seeder
                 'name' => 'Editor Rakira',
                 'password' => Hash::make('password123'),
                 'role' => 'editor',
+                'company_id' => $rakira?->id,
             ]
         );
     }

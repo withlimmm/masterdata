@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Article extends Model
 {
     use HasFactory, SoftDeletes;
+    use \App\Traits\BelongsToCompany;
 
     protected $guarded = ['id'];
     protected $casts = [

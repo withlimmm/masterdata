@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             // Menambahkan role untuk manajemen otorisasi
-            $table->enum('role', ['super_admin', 'editor'])->default('editor')->after('password');
+            $table->string('role')->default('admin')->after('password');
             $table->string('avatar')->nullable()->after('role'); // Foto profil admin
             $table->softDeletes(); // Keamanan agar akun admin yang dihapus bisa di-restore
         });

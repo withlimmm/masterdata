@@ -14,12 +14,12 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // 1. Statistik Utama (Langsung hitung dari tabel DB untuk akurasi total)
+        // 1. Statistik Utama (Menggunakan Eloquent untuk mengaktifkan Global Scope BelongsToCompany)
         $stats = [
             'unread_messages' => Message::where('status', 'unread')->count(),
-            'total_articles' => DB::table('articles')->count(),
-            'active_projects' => DB::table('portfolios')->count(),
-            'total_clients' => DB::table('clients')->count(),
+            'total_articles' => Article::count(),
+            'active_projects' => Portfolio::count(),
+            'total_clients' => Client::count(),
         ];
 
         // 2. Aktivitas Terbaru (Gabungan Pesan, Artikel, Review)

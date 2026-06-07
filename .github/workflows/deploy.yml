@@ -47,7 +47,7 @@ jobs:
       - name: Deploy to CompanyProfile folder
         uses: burnett01/rsync-deployments@6.0.0
         with:
-          switches: -avzr --delete
+          switches: -avzr --exclude="storage/" --exclude="public/storage/" --exclude=".env" --exclude=".git/"
           path: ./
           remote_path: /home/u408052271/domains/rakiradigital.com/CompanyProfile
           remote_host: ${{ secrets.HOSTINGER_HOST }}
@@ -55,7 +55,7 @@ jobs:
           remote_user: u408052271
           remote_key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
 
-      - name: Copy public content to public_html and fix index.php
+      - name: Copy public content to public_html
         uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.HOSTINGER_HOST }}
@@ -63,10 +63,7 @@ jobs:
           username: u408052271
           key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
           script: |
-            rm -rf /home/u408052271/domains/rakiradigital.com/public_html/*
-            cp -r /home/u408052271/domains/rakiradigital.com/CompanyProfile/public/* /home/u408052271/domains/rakiradigital.com/public_html/
-            sed -i 's|__DIR__."/../bootstrap/app.php|__DIR__."/../CompanyProfile/bootstrap/app.php|g' /home/u408052271/domains/rakiradigital.com/public_html/index.php
-            sed -i 's|__DIR__."/../vendor/autoload.php|__DIR__."/../CompanyProfile/vendor/autoload.php|g' /home/u408052271/domains/rakiradigital.com/public_html/index.php
+            rsync -a --exclude="index.php" --exclude=".htaccess" /home/u408052271/domains/rakiradigital.com/CompanyProfile/public/ /home/u408052271/domains/rakiradigital.com/public_html/
 
       - name: Run migrations & cache
         uses: appleboy/ssh-action@v1.2.2

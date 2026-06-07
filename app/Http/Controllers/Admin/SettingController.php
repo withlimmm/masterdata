@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\CompanySetting;
+use App\Models\CompanyConfig;
 use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
     public function index()
     {
-        $settings = CompanySetting::first() ?? new CompanySetting();
+        $settings = (app()->bound("tenant") ? app("tenant")->config : \App\Models\CompanyConfig::first()) ?? new CompanyConfig();
         return view('admin.settings.index', compact('settings'));
     }
 
@@ -33,9 +33,9 @@ class SettingController extends Controller
             'google_maps_iframe' => 'nullable|string',
         ]);
 
-        $setting = CompanySetting::first();
+        $setting = (app()->bound("tenant") ? app("tenant")->config : \App\Models\CompanyConfig::first());
         if (!$setting) {
-            $setting = new CompanySetting();
+            $setting = new CompanyConfig();
         }
         
         $setting->fill($validated);

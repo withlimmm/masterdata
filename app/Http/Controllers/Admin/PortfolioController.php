@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Storage;
 
 class PortfolioController extends Controller
 {
+    use \App\Traits\CheckPackageLimit;
+
     public function index()
     {
         $portfolios = Portfolio::with('category')->latest()->get(); 
@@ -25,6 +27,8 @@ class PortfolioController extends Controller
 
     public function store(Request $request)
     {
+        $this->enforcePackageLimit(Portfolio::class);
+
         $validated = $request->validate([
             'project_name' => 'required|string|max:200',
             'category_id' => 'required|exists:categories,id',
@@ -40,13 +44,13 @@ class PortfolioController extends Controller
         $validated['slug'] = Str::slug($request->project_name) . '-' . rand(1000, 9999);
 
         if ($request->hasFile('thumbnail_image')) {
-            $validated['thumbnail_image'] = $request->file('thumbnail_image')->store('portfolios/thumbnails', 'public');
+            $validated['thumbnail_image'] = $request->file('thumbnail_image')->store(tenant_path('portfolios/thumbnails'), 'public');
         }
 
         if ($request->hasFile('gallery_images')) {
             $gallery = [];
             foreach ($request->file('gallery_images') as $file) {
-                $gallery[] = $file->store('portfolios/gallery', 'public');
+                $gallery[] = $file->store(tenant_path('portfolios/gallery'), 'public');
             }
             $validated['gallery_images'] = $gallery;
         }
@@ -84,7 +88,7 @@ class PortfolioController extends Controller
             if ($portfolio->thumbnail_image) {
                 Storage::disk('public')->delete($portfolio->thumbnail_image);
             }
-            $validated['thumbnail_image'] = $request->file('thumbnail_image')->store('portfolios/thumbnails', 'public');
+            $validated['thumbnail_image'] = $request->file('thumbnail_image')->store(tenant_path('portfolios/thumbnails'), 'public');
         }
 
         if ($request->hasFile('gallery_images')) {
@@ -95,7 +99,7 @@ class PortfolioController extends Controller
             }
             $gallery = [];
             foreach ($request->file('gallery_images') as $file) {
-                $gallery[] = $file->store('portfolios/gallery', 'public');
+                $gallery[] = $file->store(tenant_path('portfolios/gallery'), 'public');
             }
             $validated['gallery_images'] = $gallery;
         }

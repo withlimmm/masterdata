@@ -100,8 +100,8 @@ class CompanyProfileController extends Controller
             });
         }
 
-        $settings = \App\Models\CompanySetting::first();
-        $whatsAppNumber = $settings?->phone ?? '6287868184742';
+        $settings = (app()->bound("tenant") ? app("tenant")->config : \App\Models\CompanyConfig::first());
+        $whatsAppNumber = $settings?->cfg_phone ?? '6287868184742';
         $whatsAppText = 'Halo, saya ingin konsultasi layanan digital untuk website dan company profile.';
         $whatsAppUrl = 'https://wa.me/' . $whatsAppNumber . '?text=' . urlencode($whatsAppText);
 

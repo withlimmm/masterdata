@@ -9,6 +9,8 @@ use Illuminate\Support\Str;
 
 class ServiceController extends Controller
 {
+    use \App\Traits\CheckPackageLimit;
+
     public function index()
     {
         $services = Service::latest()->get();
@@ -22,6 +24,8 @@ class ServiceController extends Controller
 
     public function store(Request $request)
     {
+        $this->enforcePackageLimit(Service::class);
+
         $validated = $request->validate([
             'title_id' => 'required|string|max:150',
             'title_en' => 'nullable|string|max:150',

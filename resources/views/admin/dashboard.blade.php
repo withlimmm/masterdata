@@ -6,6 +6,43 @@
 
 @section('content')
     <div class="max-w-7xl mx-auto space-y-8">
+        <!-- Subscription Widget -->
+        @if(app()->bound('tenant'))
+        @php
+            $tenant = app('tenant');
+            $package = $tenant->package;
+            $expiryDate = \Carbon\Carbon::parse($tenant->subscription_expired_at);
+            $daysLeft = now()->diffInDays($expiryDate, false);
+            $isExpiring = $daysLeft <= 14 && $daysLeft >= 0;
+            $isExpired = $daysLeft < 0;
+        @endphp
+        <section class="bg-gradient-to-r {{ $isExpired ? 'from-red-600 to-red-500' : ($isExpiring ? 'from-amber-500 to-orange-400' : 'from-indigo-600 to-blue-500') }} rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+            <div class="absolute right-0 top-0 opacity-10 transform translate-x-4 -translate-y-4">
+                <span class="material-symbols-outlined text-[150px]">verified</span>
+            </div>
+            <div class="relative z-10 flex flex-col md:flex-row justify-between md:items-center gap-4">
+                <div>
+                    <h2 class="text-xl font-bold mb-1">Status Langganan: {{ $package->package_name ?? 'Unknown Plan' }}</h2>
+                    <p class="text-white/80 text-sm">
+                        Batas Layanan/Portofolio: <strong class="text-white">{{ $package->package_max_products ?? 0 }} Data</strong>
+                        <span class="mx-2">|</span>
+                        Kadaluarsa: <strong class="text-white">{{ $expiryDate->translatedFormat('d F Y') }}</strong>
+                    </p>
+                </div>
+                <div class="bg-white/20 px-6 py-3 rounded-xl backdrop-blur-sm border border-white/20 text-center">
+                    <p class="text-xs uppercase tracking-wider font-bold opacity-80 mb-1">Sisa Masa Aktif</p>
+                    <p class="text-2xl font-black {{ $isExpired ? 'text-red-100' : 'text-white' }}">
+                        @if($isExpired)
+                            EXPIRED
+                        @else
+                            {{ floor($daysLeft) }} Hari
+                        @endif
+                    </p>
+                </div>
+            </div>
+        </section>
+        @endif
+
         <!-- Quick Actions Bento -->
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <a href="{{ route('admin.articles.create') }}"

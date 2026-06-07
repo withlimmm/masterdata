@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 class ActivityLog extends Model
 {
     use HasFactory, Prunable;
+    use \App\Traits\BelongsToCompany;
 
     /**
      * Get the prunable model query.

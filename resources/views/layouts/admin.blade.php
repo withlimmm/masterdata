@@ -128,6 +128,31 @@
 
             <div class="pt-4 pb-2 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-outline-variant">Sistem</div>
 
+            @if(Auth::user()->role === 'super_admin')
+            <a href="{{ route('admin.packages.index') }}" class="flex items-center justify-between rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.packages.*') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined {{ request()->routeIs('admin.packages.*') ? 'fill-1' : 'group-hover:text-primary' }}">inventory_2</span>
+                    <span class="text-sm font-bold tracking-tight">Master Paket</span>
+                </div>
+            </a>
+
+            <a href="{{ route('admin.companies.index') }}" class="flex items-center justify-between rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.companies.*') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined {{ request()->routeIs('admin.companies.*') ? 'fill-1' : 'group-hover:text-primary' }}">apartment</span>
+                    <span class="text-sm font-bold tracking-tight">Data Klien Tenant</span>
+                </div>
+            </a>
+            @endif
+
+            @if(app()->bound('tenant'))
+            <a href="{{ route('admin.users.index') }}" class="flex items-center justify-between rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.users.*') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined {{ request()->routeIs('admin.users.*') ? 'fill-1' : 'group-hover:text-primary' }}">manage_accounts</span>
+                    <span class="text-sm font-bold tracking-tight">Kelola Staf / Tim</span>
+                </div>
+            </a>
+            @endif
+
             <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.settings.*') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
                 <span class="material-symbols-outlined {{ request()->routeIs('admin.settings.*') ? 'fill-1' : 'group-hover:text-primary' }}">settings</span>
                 <span class="text-sm font-bold tracking-tight">Pengaturan</span>

@@ -52,4 +52,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(ActivityLog::class);
     }
+
+    // Relasi: User ke Perusahaan (SaaS)
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_id');
+    }
 }

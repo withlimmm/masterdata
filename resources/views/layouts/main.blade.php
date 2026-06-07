@@ -567,27 +567,41 @@
             visibility: visible;
         }
         
-        /* Mobile Panel - Premium Redesign */
+        /* Mobile Panel - Premium Redesign (animates from navbar pill itself) */
         .mobile-panel-floating {
             position: fixed;
-            top: 0;
-            right: -100%;
-            width: 85%;
-            max-width: 380px;
-            height: 100vh;
+            top: 16px;
+            left: 12px;
+            right: 12px;
+            width: calc(100% - 24px);
+            max-width: 100%;
+            height: auto;
+            min-height: 0;
+            max-height: 90vh;
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(20px);
             z-index: 1002;
-            transition: right 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             padding: 0;
-            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
-            border-left: 1px solid rgba(10, 136, 178, 0.2);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+            border-radius: 28px;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+            /* Start state: collapsed to the navbar pill size */
+            transform-origin: top right;
+            transform: scale(0.05) translateY(-20px);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        opacity 0.3s ease,
+                        border-radius 0.45s ease;
         }
 
         .mobile-panel-floating.active {
-            right: 0;
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+            overflow-y: auto;
         }
 
         /* Header Panel */
@@ -664,13 +678,30 @@
             border-radius: 16px;
             font-weight: 500;
             color: #1e293b;
-            transition: all 0.25s ease;
+            transition: all 0.3s ease;
             text-decoration: none;
+            opacity: 0;
+            transform: translateY(-15px);
         }
+
+        .mobile-panel-floating.active .mobile-link-floating {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .mobile-panel-floating.active .mobile-link-floating:nth-child(1) { transition-delay: 0.1s; }
+        .mobile-panel-floating.active .mobile-link-floating:nth-child(2) { transition-delay: 0.15s; }
+        .mobile-panel-floating.active .mobile-link-floating:nth-child(3) { transition-delay: 0.2s; }
+        .mobile-panel-floating.active .mobile-link-floating:nth-child(4) { transition-delay: 0.25s; }
+        .mobile-panel-floating.active .mobile-link-floating:nth-child(5) { transition-delay: 0.3s; }
 
         .mobile-link-floating:hover {
             background: rgba(10, 136, 178, 0.08);
             color: var(--primary);
+        }
+
+        /* override transform for hover when active */
+        .mobile-panel-floating.active .mobile-link-floating:hover {
             transform: translateX(6px);
         }
 
@@ -684,6 +715,15 @@
             padding: 24px;
             border-top: 1px solid rgba(0, 0, 0, 0.05);
             background: rgba(255, 255, 255, 0.6);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-panel-floating.active .mobile-panel-bottom {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.4s;
         }
 
         /* Language Switcher inside panel */
@@ -1204,25 +1244,7 @@
                 <a href="/blog" class="nav-link {{ request()->is('blog*') ? 'active' : '' }}">{{ __('Blog') }}</a>
             </div>
 
-            <div class="hidden md:flex items-center gap-5">
-                <div class="lang-switch-floating">
-                    <a href="{{ route('lang.switch', 'id') }}" 
-                       class="lang-option-floating {{ app()->getLocale() == 'id' ? 'active' : '' }} notranslate" translate="no">
-                        ID
-                    </a>
-                    <a href="{{ route('lang.switch', 'en') }}" 
-                       class="lang-option-floating {{ app()->getLocale() == 'en' ? 'active' : '' }} notranslate" translate="no">
-                        EN
-                    </a>
-                </div>
-                
-                <a href="{{ url('/#kontak') }}" class="btn-floating">
-                    <span>{{ __('Konsultasi Gratis') }}</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                    </svg>
-                </a>
-            </div>
+            {{-- Desktop Navbar Part 3 (Language & CTA) removed per request --}}
 
             <div class="menu-toggle-floating md:hidden" id="menuToggle">
                 <span></span>

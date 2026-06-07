@@ -7,10 +7,10 @@ use App\Models\Category;
 use App\Models\Faq;
 use App\Models\Page;
 use App\Models\Review;
-use App\Models\Team;
+use App\Models\Team; 
 use App\Models\Service;
 use App\Models\Portfolio;
-use App\Models\CompanySetting;
+use App\Models\CompanyConfig;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\TeamController;
+use App\Http\Controllers\Admin\SaasTenantController;
 use App\Http\Controllers\SitemapController;
 
 /*
@@ -38,6 +39,15 @@ use App\Http\Controllers\SitemapController;
 */
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap.index');
 Route::get('/sitemap-images.xml', [SitemapController::class, 'images'])->name('sitemap.images');
+
+/*
+|--------------------------------------------------------------------------
+| SaaS Public API — dipanggil dari domain client untuk cek status
+| GET /api/saas/check?domain=akagroupconsulting.com&key=xxx
+|--------------------------------------------------------------------------
+*/
+Route::get('/api/saas/check', [\App\Http\Controllers\Api\SaaSCheckController::class, 'check'])->name('saas.check');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -135,12 +145,12 @@ Route::get('/', function () {
         return (object) $service;
     });
 
-    $settings = \App\Models\CompanySetting::first();
-    $whatsAppNumber = $settings?->phone ?? '6287868184742';
+    $settings = (app()->bound("tenant") ? app("tenant")->config : \App\Models\CompanyConfig::first());
+    $whatsAppNumber = $settings?->cfg_phone ?? '6287868184742';
     $whatsAppText = 'Halo, saya ingin konsultasi layanan digital untuk website dan company profile.';
     $whatsAppUrl = 'https://wa.me/' . $whatsAppNumber . '?text=' . urlencode($whatsAppText);
 
-    return view('welcome', compact('clients', 'client_logos', 'faqs', 'services', 'whatsAppNumber', 'whatsAppText', 'whatsAppUrl'));
+    return view('welcome', compact('clients', 'client_logos', 'faqs', 'services', 'whatsAppNumber', 'whatsAppText', 'whatsAppUrl', 'settings'));
 })->name('home');
 
 Route::get('/layanan', function () {
@@ -150,7 +160,7 @@ Route::get('/layanan', function () {
         $services = \App\Models\Service::where('status', 'active')->latest()->get();
     }
     if (Schema::hasTable('company_settings')) {
-        $settings = CompanySetting::first();
+        $settings = (app()->bound("tenant") ? app("tenant")->config : \App\Models\CompanyConfig::first());
     }
 
     return view('services', compact('services', 'settings'));
@@ -160,7 +170,7 @@ Route::get('/layanan/{slug}', function ($slug) {
     $service = \App\Models\Service::where('slug', $slug)->firstOrFail();
     $settings = null;
     if (Schema::hasTable('company_settings')) {
-        $settings = CompanySetting::first();
+        $settings = (app()->bound("tenant") ? app("tenant")->config : \App\Models\CompanyConfig::first());
     }
     return view('services.show', compact('service', 'settings'));
 })->name('services.show');
@@ -179,7 +189,7 @@ Route::get('/portofolio', function () {
     }
 
     if (Schema::hasTable('company_settings')) {
-        $settings = \App\Models\CompanySetting::first();
+        $settings = (app()->bound("tenant") ? app("tenant")->config : \App\Models\CompanyConfig::first());
     }
 
     return view('portfolio', compact('categories', 'portfolios', 'settings'));
@@ -189,7 +199,7 @@ Route::get('/portofolio/{slug}', function ($slug) {
     $portfolio = \App\Models\Portfolio::with('category')->where('slug', $slug)->firstOrFail();
     $settings = null;
     if (Schema::hasTable('company_settings')) {
-        $settings = \App\Models\CompanySetting::first();
+        $settings = (app()->bound("tenant") ? app("tenant")->config : \App\Models\CompanyConfig::first());
     }
     return view('portfolio-detail', compact('portfolio', 'settings'));
 })->name('portfolio.show');
@@ -201,7 +211,7 @@ Route::get('/tentang-kami', function () {
         $teams = Team::latest()->get();
     }
     if (Schema::hasTable('company_settings')) {
-        $settings = CompanySetting::first();
+        $settings = (app()->bound("tenant") ? app("tenant")->config : \App\Models\CompanyConfig::first());
     }
 
     return view('about', compact('teams', 'settings'));
@@ -228,14 +238,14 @@ Route::get('/blog', function () {
     }
 
     if (Schema::hasTable('company_settings')) {
-        $settings = CompanySetting::first();
+        $settings = (app()->bound("tenant") ? app("tenant")->config : \App\Models\CompanyConfig::first());
     }
 
     return view('blog', compact('categories', 'articles', 'settings'));
 })->name('blog');
 
 Route::get('/blog/{slug}', function (string $slug) {
-    if (! Schema::hasTable('articles')) {
+    if (!Schema::hasTable('articles')) {
         abort(404);
     }
 
@@ -262,7 +272,7 @@ Route::get('/blog/{slug}', function (string $slug) {
 
     $settings = null;
     if (Schema::hasTable('company_settings')) {
-        $settings = CompanySetting::first();
+        $settings = (app()->bound("tenant") ? app("tenant")->config : \App\Models\CompanyConfig::first());
     }
 
     return view('blog-detail', compact('article', 'related_articles', 'settings'));
@@ -274,12 +284,12 @@ Route::get('/dashboard', function () {
 
 // Legal Pages
 Route::get('/privacy-policy', function () {
-    $settings = \App\Models\CompanySetting::first();
+    $settings = (app()->bound("tenant") ? app("tenant")->config : \App\Models\CompanyConfig::first());
     return view('pages.privacy', compact('settings'));
 })->name('privacy');
 
 Route::get('/terms-of-service', function () {
-    $settings = \App\Models\CompanySetting::first();
+    $settings = (app()->bound("tenant") ? app("tenant")->config : \App\Models\CompanyConfig::first());
     return view('pages.terms', compact('settings'));
 })->name('terms');
 
@@ -295,6 +305,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(
     Route::resource('services', ServiceController::class);
     Route::resource('portfolios', PortfolioController::class);
     Route::resource('pages', PageController::class);
+    
+    // User Management for Tenant
+    Route::resource('users', App\Http\Controllers\Admin\UserController::class)->except(['show']);
+    
     Route::resource('articles', ArticleController::class);
     Route::resource('messages', MessageController::class);
     Route::resource('clients', ClientController::class);
@@ -305,6 +319,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(
 
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
+
+    Route::middleware('super_admin')->group(function () {
+        Route::resource('packages', App\Http\Controllers\Admin\PackageController::class);
+        Route::post('companies/{company}/regenerate-key', [App\Http\Controllers\Admin\CompanyController::class, 'regenerateApiKey'])->name('companies.regenerate-key');
+        Route::resource('companies', App\Http\Controllers\Admin\CompanyController::class);
+    });
 });
 
 Route::post('/konsultasi', function (Request $request) {
@@ -323,7 +343,7 @@ Route::post('/konsultasi', function (Request $request) {
             'response' => $request->input('g-recaptcha-response'),
             'remoteip' => $request->ip()
         ]);
-        
+
         if (!$response->successful() || !$response->json('success') || $response->json('score') < 0.5) {
             return redirect()->back()->with('error', 'Validasi keamanan (Anti-Spam) gagal. Silakan coba lagi.');
         }
@@ -337,6 +357,7 @@ Route::post('/konsultasi', function (Request $request) {
 
     return redirect()->route('home')->with('success', 'Terima kasih! Pesan konsultasi Anda telah terkirim. Tim kami akan segera menghubungi Anda.');
 })->name('konsultasi.store')->middleware('throttle:3,1');
+
 Route::post('/review', function (Illuminate\Http\Request $request) {
     $validated = $request->validate([
         'name' => 'required|string|max:150',
@@ -352,7 +373,7 @@ Route::post('/review', function (Illuminate\Http\Request $request) {
             'response' => $request->input('g-recaptcha-response'),
             'remoteip' => $request->ip()
         ]);
-        
+
         if (!$response->successful() || !$response->json('success') || $response->json('score') < 0.5) {
             return redirect()->back()->with('error', 'Validasi keamanan (Anti-Spam) gagal. Silakan coba lagi.');
         }
@@ -364,3 +385,11 @@ Route::post('/review', function (Illuminate\Http\Request $request) {
 
     return redirect()->route('home')->with('success_review', 'Terima kasih! Ulasan Anda telah terkirim dan menunggu moderasi admin.');
 })->name('review.store')->middleware('throttle:3,1');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__ . '/auth.php';

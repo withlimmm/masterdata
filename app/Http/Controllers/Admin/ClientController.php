@@ -35,7 +35,7 @@ class ClientController extends Controller
         ]);
 
         if ($request->hasFile('company_logo')) {
-            $path = $request->file('company_logo')->store('clients/logos', 'public');
+            $path = $request->file('company_logo')->store(tenant_path('clients/logos'), 'public');
             $validated['company_logo'] = $path;
         }
 
@@ -67,7 +67,7 @@ class ClientController extends Controller
             if ($client->company_logo) {
                 Storage::disk('public')->delete($client->company_logo);
             }
-            $path = $request->file('company_logo')->store('clients/logos', 'public');
+            $path = $request->file('company_logo')->store(tenant_path('clients/logos'), 'public');
             $validated['company_logo'] = $path;
         }
 

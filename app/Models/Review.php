@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Review extends Model
 {
     use HasFactory;
+    use \App\Traits\BelongsToCompany;
 
     protected $fillable = ['name', 'company', 'rating', 'comment', 'status'];
 

@@ -1,0 +1,8 @@
+# Jalankan perintah ini satu per satu di terminal project Anda:
+
+# 1. Migrate tabel saas_tenants
+php artisan migrate --path=database/migrations/2026_05_31_000001_create_saas_tenants_table.php
+
+# 2. Clear cache route (penting!)
+php artisan route:clear
+php artisan config:clear

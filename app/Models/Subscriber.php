@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Subscriber extends Model
 {
     use HasFactory;
+    use \App\Traits\BelongsToCompany;
 
     protected $guarded = ['id'];
 }

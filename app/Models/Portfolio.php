@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Portfolio extends Model
 {
     use HasFactory, SoftDeletes;
+    use \App\Traits\BelongsToCompany;
 
     protected $guarded = ['id'];
 
