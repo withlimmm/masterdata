@@ -55,7 +55,7 @@ jobs:
           remote_user: u408052271
           remote_key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
 
-      - name: Copy public content to public_html
+      - name: Copy public content, Run migrations & cache
         uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.HOSTINGER_HOST }}
@@ -64,15 +64,6 @@ jobs:
           key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
           script: |
             rsync -a --exclude="index.php" --exclude=".htaccess" /home/u408052271/domains/rakiradigital.com/CompanyProfile/public/ /home/u408052271/domains/rakiradigital.com/public_html/
-
-      - name: Run migrations & cache
-        uses: appleboy/ssh-action@v1.2.2
-        with:
-          host: ${{ secrets.HOSTINGER_HOST }}
-          port: ${{ secrets.HOSTINGER_PORT }}
-          username: u408052271
-          key: ${{ secrets.HOSTINGER_SSH_PRIVATE_KEY }}
-          script: |
             cd /home/u408052271/domains/rakiradigital.com/CompanyProfile
             php artisan migrate --force
             php artisan optimize:clear
