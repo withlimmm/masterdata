@@ -30,8 +30,13 @@
 {{-- Toolbar --}}
 <div class="bg-white rounded-2xl shadow-sm border border-outline-variant/20 p-4 flex flex-col md:flex-row items-start md:items-center gap-3">
     <form method="GET" class="flex flex-1 flex-wrap gap-3">
-        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari domain, perusahaan, email..."
-               class="flex-1 min-w-[200px] text-sm px-4 py-2.5 border border-outline-variant/40 rounded-xl focus:ring-2 focus:ring-primary/30 outline-none">
+        <div class="relative flex-1 min-w-[200px] group text-slate-500 focus-within:text-slate-800">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <span class="material-symbols-outlined text-[18px]">search</span>
+            </div>
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari domain, perusahaan, email..."
+                   style="padding-left: 2.25rem;" class="w-full text-sm pr-4 py-2.5 border border-outline-variant/40 rounded-xl focus:ring-2 focus:ring-primary/30 outline-none">
+        </div>
         <select name="status" class="text-sm px-4 py-2.5 border border-outline-variant/40 rounded-xl focus:ring-2 focus:ring-primary/30 outline-none bg-white">
             <option value="">Semua Status</option>
             @foreach(['trial','active','suspended','expired'] as $s)

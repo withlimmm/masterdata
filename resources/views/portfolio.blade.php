@@ -70,11 +70,11 @@
     <main class="px-4 md:px-20 pb-32 max-w-7xl mx-auto">
         {{-- Dynamic Category Filters --}}
         <div class="flex flex-wrap justify-center gap-3 mb-16" data-aos="fade-up">
-            <button class="filter-btn px-8 py-3 rounded-full bg-primary text-white font-bold shadow-xl shadow-primary/20 transition-all hover:scale-105 active:scale-95" data-filter="all">
+            <button class="filter-btn px-8 py-3 rounded-full font-bold shadow-xl transition-all hover:scale-105 active:scale-95 bg-slate-900 text-white" style="background-color: #0f172a; color: white;" data-filter="all">
                 {{ __('Semua Karya') }}
             </button>
             @foreach($categories as $category)
-                <button class="filter-btn px-8 py-3 rounded-full bg-white text-on-surface-variant border border-outline-variant/30 font-bold transition-all hover:bg-primary/5 hover:text-primary hover:border-primary/20 active:scale-95" data-filter="{{ __t($category->name) }}">
+                <button class="filter-btn px-8 py-3 rounded-full bg-white text-slate-600 border border-slate-300 font-bold transition-all hover:bg-slate-100 hover:text-slate-900 hover:border-slate-400 active:scale-95" style="color: #475569;" data-filter="{{ __t($category->name) }}">
                     {{ __t($category->name) }}
                 </button>
             @endforeach
@@ -109,7 +109,7 @@
                             </span>
                             {{-- Client Name --}}
                             @if($portfolio->client_name)
-                                <span class="bg-surface-container text-on-surface-variant text-[10px] uppercase font-black tracking-widest px-3 py-1.5 rounded-lg">
+                                <span class="bg-surface-container text-slate-600 text-[10px] uppercase font-black tracking-widest px-3 py-1.5 rounded-lg">
                                     {{ __t($portfolio->client_name) }}
                                 </span>
                             @endif
@@ -118,7 +118,7 @@
                         <h3 class="text-2xl font-bold text-on-surface mb-3 group-hover:text-primary transition-colors leading-snug">
                             {{ __t($portfolio->project_name) }}
                         </h3>
-                        <p class="text-on-surface-variant text-sm line-clamp-2 leading-relaxed italic">
+                        <p class="text-slate-600 text-sm line-clamp-2 leading-relaxed italic">
                             {{ __t($portfolio->description) }}
                         </p>
                     </div>
@@ -129,7 +129,7 @@
                         <span class="material-symbols-outlined notranslate text-5xl" translate="no">folder_open</span>
                     </div>
                     <h3 class="text-2xl font-bold text-on-surface mb-2">{{ __('Belum ada portofolio') }}</h3>
-                    <p class="text-on-surface-variant max-w-sm mx-auto">{{ __('Kami sedang mempersiapkan daftar karya terbaik untuk ditampilkan di sini.') }}</p>
+                    <p class="text-slate-600 max-w-sm mx-auto">{{ __('Kami sedang mempersiapkan daftar karya terbaik untuk ditampilkan di sini.') }}</p>
                 </div>
             @endforelse
         </div>
@@ -144,11 +144,15 @@
         filterBtns.forEach(btn => {
             btn.addEventListener('click', function() {
                 filterBtns.forEach(b => {
-                    b.classList.remove('bg-primary', 'text-white', 'shadow-xl', 'shadow-primary/20');
-                    b.classList.add('bg-white', 'text-on-surface-variant', 'border', 'border-outline-variant/30');
+                    b.classList.remove('bg-slate-900', 'text-white', 'shadow-xl', 'shadow-slate-900/20');
+                    b.classList.add('bg-white', 'text-slate-600', 'border', 'border-slate-300');
+                    b.style.backgroundColor = 'white';
+                    b.style.color = '#475569';
                 });
-                this.classList.remove('bg-white', 'text-on-surface-variant', 'border', 'border-outline-variant/30');
-                this.classList.add('bg-primary', 'text-white', 'shadow-xl', 'shadow-primary/20');
+                this.classList.remove('bg-white', 'text-slate-600', 'border', 'border-slate-300');
+                this.classList.add('bg-slate-900', 'text-white', 'shadow-xl', 'shadow-slate-900/20');
+                this.style.backgroundColor = '#0f172a';
+                this.style.color = 'white';
 
                 const filter = this.getAttribute('data-filter');
 

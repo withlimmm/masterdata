@@ -23,8 +23,8 @@ class TenantMiddleware
             $host = substr($host, 4);
         }
 
-        // Jika host adalah local/testing, pakai fallback agar web tidak error
-        if (in_array($host, ['localhost', '127.0.0.1', '::1']) || str_ends_with($host, '.test')) {
+        // Jika host adalah local/testing/domain utama, pakai fallback agar web tidak error
+        if (in_array($host, ['localhost', '127.0.0.1', '::1', 'rakiradigital.com']) || str_ends_with($host, '.test')) {
             $company = Company::where('company_domain', $host)->first() ?? Company::first();
         } else {
             $company = Company::where('company_domain', $host)->first();

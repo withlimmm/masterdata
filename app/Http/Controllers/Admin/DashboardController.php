@@ -36,12 +36,15 @@ class DashboardController extends Controller
         $recentActivities = $recentMessages->concat($recentArticles)->concat($recentReviews)
             ->sortByDesc('time')->take(5);
 
-        // 3. Statistik Kunjungan (Dummy Data untuk Grafik)
+        // 3. Portofolio Terbaru untuk Tabel
+        $recentPortfolios = Portfolio::with('client')->latest()->take(5)->get();
+
+        // 4. Statistik Kunjungan (Dummy Data untuk Grafik)
         $visitorStats = [
             'labels' => ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'],
             'data' => [120, 150, 180, 220, 200, 300, 250]
         ];
 
-        return view('admin.dashboard', compact('stats', 'recentActivities', 'visitorStats'));
+        return view('admin.dashboard', compact('stats', 'recentActivities', 'recentPortfolios', 'visitorStats'));
     }
 }

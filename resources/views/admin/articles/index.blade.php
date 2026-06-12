@@ -19,10 +19,12 @@
         </div>
         
         <div class="flex items-center gap-3 w-full md:w-auto">
-            <div class="relative flex-1 md:w-64">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+            <div class="relative flex-1 md:w-64 group text-slate-400 focus-within:text-slate-800">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">search</span>
+                </div>
                 <input type="text" placeholder="Cari artikel..." 
-                    class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-3 text-xs font-bold focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none">
+                    style="padding-left: 2.5rem;" class="w-full bg-slate-50 border border-slate-200 rounded-xl pr-4 py-3 text-xs font-bold focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none text-slate-800">
             </div>
             <a href="{{ route('admin.articles.create') }}" 
                 class="bg-slate-900 text-white px-6 py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest flex items-center gap-2 hover:bg-slate-800 transition-all shadow-lg active:scale-95">

@@ -8,7 +8,7 @@
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 
     <style>
         [v-cloak] { display: none !important; }
@@ -16,211 +16,283 @@
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
             display: inline-block;
             line-height: 1;
-            text-transform: none;
-            letter-spacing: normal;
-            word-wrap: normal;
-            white-space: nowrap;
-            direction: ltr;
+            vertical-align: middle;
+        }
+        .fill-1 {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* Soft grey background matching the Shadcn theme */
+        }
+        /* Custom Scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
     </style>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="site-shell flex min-h-screen overflow-x-hidden font-sans" x-data="{ sidebarOpen: false }">
+<body class="flex min-h-screen overflow-x-hidden text-slate-800" 
+      x-data="{ 
+          isDesktop: window.innerWidth >= 1024, 
+          sidebarOpen: window.innerWidth >= 1024 
+      }"
+      @resize.window="isDesktop = window.innerWidth >= 1024; if(!isDesktop) sidebarOpen = false;">
 
     <!-- Mobile Overlay -->
-    <div x-show="sidebarOpen" x-transition.opacity class="fixed inset-0 bg-black/50 z-40 lg:hidden" @click="sidebarOpen = false"></div>
+    <div x-cloak x-show="sidebarOpen && !isDesktop" x-transition.opacity class="fixed inset-0 bg-slate-900/50 z-40 backdrop-blur-sm" @click="sidebarOpen = false"></div>
 
+    <style>
+        /* Custom Scrollbar for Sidebar */
+        .sidebar-scroll::-webkit-scrollbar { width: 5px; }
+        .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-scroll::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
+    </style>
     <!-- SideNavBar -->
-    <nav 
-        :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-        class="fixed left-0 z-50 flex h-full w-72 flex-col space-y-2 border-r border-outline-variant/30 bg-surface-container-lowest p-4 shadow-xl transition-transform duration-300 ease-in-out lg:translate-x-0">
+    <aside 
+        :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+        class="fixed left-0 top-0 bottom-0 z-50 flex w-64 flex-col transition-transform duration-300 ease-in-out bg-slate-50 border-r border-slate-200 shadow-sm p-4 overflow-y-auto">
         
-        <!-- Close Button (Mobile) -->
-        <button @click="sidebarOpen = false" class="lg:hidden absolute top-4 right-4 text-on-surface-variant">
-            <span class="material-symbols-outlined">close</span>
-        </button>
-
         <!-- Header / Brand -->
-        <div class="mb-6 flex items-center gap-3 p-4 bg-primary/5 rounded-2xl border border-primary/10 mx-2">
-            <div class="w-10 h-10 rounded-xl bg-white shadow-sm flex items-center justify-center p-1.5">
-                <img src="/images/logo-rakira.png" alt="Rakira Digital" class="w-full h-full object-contain">
-            </div>
-            <div>
-                <h2 class="text-sm font-black text-on-surface leading-tight">Rakira Admin</h2>
-                <p class="text-[10px] text-primary font-bold uppercase tracking-widest">Dashboard v1.0</p>
-            </div>
+        <div class="flex-shrink-0 mb-8 flex items-center gap-3 px-2">
+            <h2 class="text-lg font-bold text-slate-800 tracking-tight flex items-center gap-2">
+                <span class="material-symbols-outlined text-slate-800 fill-1">diamond</span>
+                Rakira Admin
+            </h2>
+            <button @click="sidebarOpen = false" class="lg:hidden ml-auto text-slate-500 hover:text-slate-800">
+                <span class="material-symbols-outlined">close</span>
+            </button>
         </div>
 
-        <!-- CTA -->
-        <div class="px-2 pb-4">
-            <a href="{{ route('admin.articles.create') }}" class="group flex w-full items-center justify-center space-x-2 rounded-xl bg-primary px-4 py-3 text-white shadow-md transition-all hover:bg-primary/90 active:scale-95">
-                <span class="material-symbols-outlined group-hover:rotate-90 transition-transform" style="font-variation-settings: 'FILL' 1;">add</span>
-                <span class="text-sm font-bold">New Content</span>
-            </a>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <div class="flex-1 flex flex-col space-y-1 overflow-y-auto px-2">
-            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.dashboard') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
-                <span class="material-symbols-outlined {{ request()->routeIs('admin.dashboard') ? 'fill-1' : 'group-hover:text-primary' }}">dashboard</span>
-                <span class="text-sm font-bold tracking-tight">Dashboard</span>
-            </a>
+        <!-- Navigation Links -->
+        <nav class="flex-1 space-y-4 pr-2">
             
-            <div class="pt-4 pb-2 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-outline-variant">Konten & Media</div>
+            <!-- Dashboard -->
+            <div>
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.dashboard') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
+                    <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.dashboard') ? 'fill-1' : '' }}">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+            </div>
 
-            <a href="{{ route('admin.articles.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.articles.*') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
-                <span class="material-symbols-outlined {{ request()->routeIs('admin.articles.*') ? 'fill-1' : 'group-hover:text-primary' }}">article</span>
-                <span class="text-sm font-bold tracking-tight">Blog Artikel</span>
-            </a>
+            <!-- Pages Group -->
+            <div x-data="{ open: true }">
+                <button @click="open = !open" class="w-full flex items-center justify-between pb-2 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-400 hover:text-slate-600 transition-colors">
+                    <span>Pages</span>
+                    <span class="material-symbols-outlined text-[16px] transition-transform duration-200" :class="open ? 'rotate-180' : ''">expand_more</span>
+                </button>
+                <div x-show="open" x-transition.opacity class="space-y-1 mt-1">
+                    <a href="{{ route('admin.articles.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.articles.*') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
+                        <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.articles.*') ? 'fill-1' : '' }}">article</span>
+                        <span class="text-sm font-medium">Blog & Articles</span>
+                    </a>
 
-            <a href="{{ route('admin.portfolios.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.portfolios.*') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
-                <span class="material-symbols-outlined {{ request()->routeIs('admin.portfolios.*') ? 'fill-1' : 'group-hover:text-primary' }}">work</span>
-                <span class="text-sm font-bold tracking-tight">Portofolio</span>
-            </a>
+                    <a href="{{ route('admin.portfolios.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.portfolios.*') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
+                        <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.portfolios.*') ? 'fill-1' : '' }}">work</span>
+                        <span class="text-sm font-medium">Portfolios</span>
+                    </a>
 
-            <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.categories.*') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
-                <span class="material-symbols-outlined {{ request()->routeIs('admin.categories.*') ? 'fill-1' : 'group-hover:text-primary' }}">category</span>
-                <span class="text-sm font-bold tracking-tight">Kategori</span>
-            </a>
+                    <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.categories.*') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
+                        <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.categories.*') ? 'fill-1' : '' }}">category</span>
+                        <span class="text-sm font-medium">Categories</span>
+                    </a>
 
-            <a href="{{ route('admin.services.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.services.*') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
-                <span class="material-symbols-outlined {{ request()->routeIs('admin.services.*') ? 'fill-1' : 'group-hover:text-primary' }}">business_center</span>
-                <span class="text-sm font-bold tracking-tight">Layanan</span>
-            </a>
+                    <a href="{{ route('admin.services.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.services.*') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
+                        <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.services.*') ? 'fill-1' : '' }}">business_center</span>
+                        <span class="text-sm font-medium">Services</span>
+                    </a>
 
-            <a href="{{ route('admin.teams.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.teams.*') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
-                <span class="material-symbols-outlined {{ request()->routeIs('admin.teams.*') ? 'fill-1' : 'group-hover:text-primary' }}">badge</span>
-                <span class="text-sm font-bold tracking-tight">Tim Kami</span>
-            </a>
-
-            <div class="pt-4 pb-2 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-outline-variant">Interaksi</div>
-
-            <a href="{{ route('admin.faqs.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.faqs.*') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
-                <span class="material-symbols-outlined {{ request()->routeIs('admin.faqs.*') ? 'fill-1' : 'group-hover:text-primary' }}">quiz</span>
-                <span class="text-sm font-bold tracking-tight">Tanya Jawab (FAQ)</span>
-            </a>
-
-            <a href="{{ route('admin.messages.index') }}" class="flex items-center justify-between rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.messages.*') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined {{ request()->routeIs('admin.messages.*') ? 'fill-1' : 'group-hover:text-primary' }}">mail</span>
-                    <span class="text-sm font-bold tracking-tight">Pesan Masuk</span>
+                    <a href="{{ route('admin.teams.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.teams.*') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
+                        <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.teams.*') ? 'fill-1' : '' }}">groups</span>
+                        <span class="text-sm font-medium">Team Members</span>
+                    </a>
                 </div>
-                @if($unread_messages_count > 0)
-                    <span class="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-black text-white shadow-sm">{{ $unread_messages_count }}</span>
-                @endif
-            </a>
+            </div>
 
-            <a href="{{ route('admin.reviews.index') }}" class="flex items-center justify-between rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.reviews.*') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined {{ request()->routeIs('admin.reviews.*') ? 'fill-1' : 'group-hover:text-primary' }}">rate_review</span>
-                    <span class="text-sm font-bold tracking-tight">Ulasan Klien</span>
+            <!-- Interactions Group -->
+            <div x-data="{ open: true }">
+                <button @click="open = !open" class="w-full flex items-center justify-between pt-4 pb-2 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-400 hover:text-slate-600 transition-colors border-t border-slate-200/60">
+                    <span>Interactions</span>
+                    <span class="material-symbols-outlined text-[16px] transition-transform duration-200" :class="open ? 'rotate-180' : ''">expand_more</span>
+                </button>
+                <div x-show="open" x-transition.opacity class="space-y-1 mt-1">
+                    <a href="{{ route('admin.messages.index') }}" class="flex items-center justify-between rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.messages.*') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.messages.*') ? 'fill-1' : '' }}">mail</span>
+                            <span class="text-sm font-medium">Messages</span>
+                        </div>
+                        @if(isset($unread_messages_count) && $unread_messages_count > 0)
+                            <span class="flex h-5 w-5 items-center justify-center rounded bg-emerald-500 text-[10px] font-bold text-white shadow-sm">{{ $unread_messages_count }}</span>
+                        @endif
+                    </a>
+
+                    <a href="{{ route('admin.reviews.index') }}" class="flex items-center justify-between rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.reviews.*') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.reviews.*') ? 'fill-1' : '' }}">rate_review</span>
+                            <span class="text-sm font-medium">Reviews</span>
+                        </div>
+                        @if(isset($pending_reviews_count) && $pending_reviews_count > 0)
+                            <span class="flex h-5 w-5 items-center justify-center rounded bg-amber-500 text-[10px] font-bold text-white shadow-sm">{{ $pending_reviews_count }}</span>
+                        @endif
+                    </a>
+
+                    <a href="{{ route('admin.faqs.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.faqs.*') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
+                        <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.faqs.*') ? 'fill-1' : '' }}">help</span>
+                        <span class="text-sm font-medium">FAQs</span>
+                    </a>
                 </div>
-                @if($pending_reviews_count > 0)
-                    <span class="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-[10px] font-black text-white shadow-sm">{{ $pending_reviews_count }}</span>
-                @endif
-            </a>
+            </div>
 
-            <a href="{{ route('admin.clients.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.clients.*') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
-                <span class="material-symbols-outlined {{ request()->routeIs('admin.clients.*') ? 'fill-1' : 'group-hover:text-primary' }}">groups</span>
-                <span class="text-sm font-bold tracking-tight">Data Klien</span>
-            </a>
+            <!-- System & Admin Group -->
+            <div x-data="{ open: true }">
+                <button @click="open = !open" class="w-full flex items-center justify-between pt-4 pb-2 px-4 text-[11px] font-bold uppercase tracking-wider text-slate-400 hover:text-slate-600 transition-colors border-t border-slate-200/60">
+                    <span>System & Admin</span>
+                    <span class="material-symbols-outlined text-[16px] transition-transform duration-200" :class="open ? 'rotate-180' : ''">expand_more</span>
+                </button>
+                <div x-show="open" x-transition.opacity class="space-y-1 mt-1">
+                    <a href="{{ route('admin.clients.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.clients.*') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
+                        <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.clients.*') ? 'fill-1' : '' }}">person</span>
+                        <span class="text-sm font-medium">Client Data</span>
+                    </a>
 
-            <div class="pt-4 pb-2 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-outline-variant">Sistem</div>
+                    @if(Auth::user()->role === 'super_admin')
+                    <a href="{{ route('admin.packages.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.packages.*') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
+                        <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.packages.*') ? 'fill-1' : '' }}">inventory_2</span>
+                        <span class="text-sm font-medium">Packages</span>
+                    </a>
 
-            @if(Auth::user()->role === 'super_admin')
-            <a href="{{ route('admin.packages.index') }}" class="flex items-center justify-between rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.packages.*') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined {{ request()->routeIs('admin.packages.*') ? 'fill-1' : 'group-hover:text-primary' }}">inventory_2</span>
-                    <span class="text-sm font-bold tracking-tight">Master Paket</span>
+                    <a href="{{ route('admin.companies.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.companies.*') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
+                        <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.companies.*') ? 'fill-1' : '' }}">apartment</span>
+                        <span class="text-sm font-medium">Tenant Companies</span>
+                    </a>
+                    @endif
+
+                    @if(app()->bound('tenant'))
+                    <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.users.*') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
+                        <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.users.*') ? 'fill-1' : '' }}">manage_accounts</span>
+                        <span class="text-sm font-medium">Staff Members</span>
+                    </a>
+                    @endif
+
+                    <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.settings.*') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
+                        <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.settings.*') ? 'fill-1' : '' }}">settings</span>
+                        <span class="text-sm font-medium">Settings</span>
+                    </a>
                 </div>
-            </a>
+            </div>
+        </nav>
 
-            <a href="{{ route('admin.companies.index') }}" class="flex items-center justify-between rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.companies.*') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined {{ request()->routeIs('admin.companies.*') ? 'fill-1' : 'group-hover:text-primary' }}">apartment</span>
-                    <span class="text-sm font-bold tracking-tight">Data Klien Tenant</span>
-                </div>
-            </a>
-            @endif
-
-            @if(app()->bound('tenant'))
-            <a href="{{ route('admin.users.index') }}" class="flex items-center justify-between rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.users.*') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
-                <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined {{ request()->routeIs('admin.users.*') ? 'fill-1' : 'group-hover:text-primary' }}">manage_accounts</span>
-                    <span class="text-sm font-bold tracking-tight">Kelola Staf / Tim</span>
-                </div>
-            </a>
-            @endif
-
-            <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-300 group {{ request()->routeIs('admin.settings.*') ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
-                <span class="material-symbols-outlined {{ request()->routeIs('admin.settings.*') ? 'fill-1' : 'group-hover:text-primary' }}">settings</span>
-                <span class="text-sm font-bold tracking-tight">Pengaturan</span>
-            </a>
-        </div>
-
-        <!-- Footer Tab -->
-        <div class="mt-auto pt-4 border-t border-outline-variant/30">
+        <!-- Footer Action -->
+        <div class="flex-shrink-0 mt-8 pt-4 px-2 border-t border-slate-200">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="flex items-center space-x-3 px-4 py-3 text-on-surface-variant hover:bg-red-50 hover:text-error rounded-xl transition-all w-full text-left group">
-                    <span class="material-symbols-outlined text-gray-400 group-hover:text-error group-hover:rotate-180 transition-transform duration-500">logout</span>
-                    <span class="text-sm font-bold">Logout Securely</span>
+                <button type="submit" class="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-slate-600 transition-all duration-200 hover:bg-slate-200 hover:text-slate-900">
+                    <span class="material-symbols-outlined text-[20px]">logout</span>
+                    <span class="text-sm font-medium">Logout</span>
                 </button>
             </form>
         </div>
-    </nav>
+    </aside>
 
-    <!-- Main Content Canvas -->
-    <main class="flex min-h-screen flex-1 flex-col overflow-hidden lg:ml-72">
-        <!-- Sticky Header -->
-        <header class="sticky top-0 z-40 flex items-center justify-between border-b border-outline-variant/30 bg-white/80 px-4 py-4 shadow-sm backdrop-blur-lg lg:px-8">
+    <!-- Main Content Area -->
+    <main :style="sidebarOpen && isDesktop ? 'margin-left: 256px' : 'margin-left: 0'" class="flex min-h-screen flex-1 flex-col p-4 lg:p-6 transition-all duration-300">
+        
+        <!-- Header -->
+        <header class="flex items-center justify-between mb-8">
             <div class="flex items-center gap-4">
-                <!-- Hamburger Button (Mobile) -->
-                <button @click="sidebarOpen = true" class="rounded-lg p-2 text-on-surface-variant transition-colors hover:bg-surface-container-low lg:hidden">
+                <!-- Hamburger Menu Button (Always Visible) -->
+                <button @click="sidebarOpen = !sidebarOpen" class="rounded-lg p-2 text-slate-500 hover:bg-white shadow-sm transition-all border border-transparent hover:border-slate-200 flex-shrink-0 relative z-10">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
-                <div class="hidden sm:block">
-                    <h1 class="text-xl font-bold text-on-surface font-headline">@yield('page_title')</h1>
-                    <p class="text-xs text-on-surface-variant font-semibold">@yield('page_subtitle')</p>
+                
+                <!-- Breadcrumb / Title -->
+                <div>
+                    <nav class="flex text-sm text-slate-500 mb-1" aria-label="Breadcrumb">
+                        <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                            <li class="inline-flex items-center">
+                                <a href="{{ route('admin.dashboard') }}" class="hover:text-slate-800 transition-colors flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[16px]">home</span>
+                                </a>
+                            </li>
+                            <li>
+                                <div class="flex items-center">
+                                    <span class="material-symbols-outlined text-[16px] text-slate-400">chevron_right</span>
+                                    <span class="ml-1 text-slate-700 font-medium">@yield('page_title', 'Overview')</span>
+                                </div>
+                            </li>
+                        </ol>
+                    </nav>
+                    <h1 class="text-2xl font-bold text-slate-800 tracking-tight">@yield('page_title', 'Dashboard')</h1>
                 </div>
             </div>
-            
-            <div class="flex items-center gap-3 lg:gap-6">
-                <button class="p-2 text-on-surface-variant hover:text-primary transition-colors relative group">
-                    <span class="material-symbols-outlined">notifications</span>
-                    @if($notif_count > 0)
-                        <span class="absolute top-2 right-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[8px] font-black text-white border-2 border-white ring-1 ring-red-200">
-                            {{ $notif_count }}
-                        </span>
+
+            <!-- Header Right: Actions & Profile -->
+            <div class="flex items-center gap-3 lg:gap-4">
+                <!-- Search (Mock) -->
+                <div class="hidden md:flex relative group text-slate-500 focus-within:text-slate-800">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <span class="material-symbols-outlined text-[18px]">search</span>
+                    </div>
+                    <input type="text" placeholder="Type here..." style="padding-left: 2.25rem;" class="block w-56 pr-4 py-2 rounded-full border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-slate-800/20 focus:border-slate-800 transition-all shadow-sm">
+                </div>
+
+                <a href="{{ route('admin.articles.create') }}" class="hidden sm:flex text-slate-500 hover:text-slate-800 hover:bg-white p-2 rounded-full transition-all shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">edit_square</span>
+                </a>
+
+                <button class="relative text-slate-500 hover:text-slate-800 hover:bg-white p-2 rounded-full transition-all shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">notifications</span>
+                    @if(isset($notif_count) && $notif_count > 0)
+                        <span class="absolute top-1 right-1 flex h-3 w-3 items-center justify-center rounded-full bg-red-500 text-[0px] font-bold text-white border-2 border-slate-100"></span>
                     @endif
                 </button>
-                <div class="h-6 w-px bg-outline-variant/30"></div>
-                <div class="flex items-center gap-3 bg-surface-container-low px-3 py-1.5 rounded-full border border-outline-variant/20">
-                    <div class="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold shadow-inner">
-                        {{ substr(Auth::user()->name, 0, 1) }}
+                
+                <div class="h-6 w-px bg-slate-200 mx-1"></div>
+                
+                <!-- Profile Menu -->
+                <div class="flex items-center gap-3 group cursor-pointer">
+                    <div class="hidden text-right md:block">
+                        <p class="text-sm font-bold text-slate-800 leading-none">{{ Auth::user()->name }}</p>
+                        <p class="text-xs text-slate-500 mt-1 capitalize">{{ str_replace('_', ' ', Auth::user()->role) }}</p>
                     </div>
-                    <p class="hidden md:block text-xs font-bold text-on-surface">{{ Auth::user()->name }}</p>
+                    <div class="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center text-sm font-bold shadow-md border-2 border-white">
+                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                    </div>
                 </div>
             </div>
         </header>
 
-        <!-- Scrollable Content Area -->
-        <div class="flex-1 overflow-y-auto p-4 lg:p-8 space-y-6">
+        <!-- Main Content Slot -->
+        <div class="flex-1 w-full mx-auto">
             @if(request()->is('admin/faqs*') || request()->is('admin/services*') || request()->is('admin/portfolios*') || request()->is('admin/articles*') || request()->is('admin/settings*'))
-                <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4 flex items-start gap-3 text-sm text-blue-800 animate-in fade-in duration-500">
-                    <span class="material-symbols-outlined text-blue-600 mt-0.5" style="font-variation-settings: 'FILL' 1;">info</span>
+                <div class="bg-blue-50/50 border border-blue-100 rounded-xl p-4 mb-6 flex items-start gap-3 text-sm text-blue-800 shadow-sm backdrop-blur-sm">
+                    <span class="material-symbols-outlined text-blue-500 mt-0.5 fill-1">info</span>
                     <div>
-                        <p class="font-bold">💡 Tips Konten Langsung</p>
-                        <p class="text-blue-700/90 text-xs mt-1 leading-relaxed">
-                            Setiap perubahan dari admin akan langsung dipakai di public tanpa menunggu cache lama. Jika ada teks bilingual, sistem juga bisa membaca format JSON atau format lama untuk kompatibilitas.
-                        </p>
+                        <p class="font-bold tracking-tight">Tips Konten Langsung</p>
+                        <p class="text-blue-600/80 mt-0.5">Perubahan di admin akan langsung diaplikasikan ke halaman publik.</p>
                     </div>
                 </div>
             @endif
 
             @yield('content')
         </div>
+        
+        <!-- Footer -->
+        <footer class="mt-auto pt-8 pb-4 text-center text-xs text-slate-400">
+            <p>&copy; {{ date('Y') }}, made with <span class="text-red-400">&hearts;</span> by Rakira Digital. All rights reserved.</p>
+        </footer>
     </main>
 
 </body>

@@ -4,8 +4,8 @@
 @section('content')
 <div class="max-w-7xl mx-auto space-y-6">
     <div class="flex justify-end">
-        <a href="{{ route('admin.companies.create') }}" class="btn-primary">
-            <span class="material-symbols-outlined">add</span> Daftarkan Klien
+        <a href="{{ route('admin.companies.create') }}" class="inline-flex items-center gap-2 text-white text-sm font-semibold py-2.5 px-5 rounded-lg shadow-sm hover:shadow hover:opacity-90 transition-all duration-200" style="background-color: #0B1120;">
+            <span class="material-symbols-outlined text-[20px]">add</span> Daftarkan Klien
         </a>
     </div>
     @if(session('success'))
