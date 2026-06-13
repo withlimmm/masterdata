@@ -52,7 +52,7 @@ class CompanyController extends Controller
                 'company_domain' => strtolower($validated['company_domain']),
                 'subscription_status' => $validated['subscription_status'],
                 'subscription_start_at' => now(),
-                'subscription_expired_at' => now()->addMonths($validated['subscription_months']),
+                'subscription_expired_at' => now()->addMonths((int) $validated['subscription_months']),
             ]);
 
             // 2. Create Company Config

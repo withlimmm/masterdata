@@ -1,99 +1,145 @@
 @extends('layouts.admin')
 
 @section('title', 'Kelola Klien - Rakira CMS')
-@section('page_title', 'Kelola Klien & Testimonial')
-@section('page_subtitle', 'Tambah, edit, dan kelola testimoni klien yang tampil di beranda.')
+@section('page_title', 'Daftar Klien & Testimonial')
+@section('page_subtitle', 'Kelola data klien, perusahaan, dan testimonial yang akan ditampilkan di website.')
 
 @section('content')
-<div class="max-w-7xl mx-auto space-y-6">
+<div class="max-w-7xl mx-auto space-y-8 pb-20">
+    {{-- Header & Stats --}}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm flex items-center gap-5 hover:shadow-md transition-all">
+            <div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-indigo-500 text-2xl">group</span>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Total Klien</p>
+                <p class="text-2xl font-black text-slate-800">{{ $clients->count() }}</p>
+            </div>
+        </div>
+        
+        <div class="bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm flex items-center gap-5 hover:shadow-md transition-all">
+            <div class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-emerald-500 text-2xl">rate_review</span>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Dengan Testimonial</p>
+                <p class="text-2xl font-black text-slate-800">{{ $clients->where('testimonial', '!=', null)->count() }}</p>
+            </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm flex items-center gap-5 hover:shadow-md transition-all">
+            <div class="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center flex-shrink-0">
+                <span class="material-symbols-outlined text-slate-500 text-2xl">visibility</span>
+            </div>
+            <div>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Status Aktif</p>
+                <p class="text-2xl font-black text-slate-800">{{ $clients->where('status', 'active')->count() }}</p>
+            </div>
+        </div>
+    </div>
+
+    {{-- Toolbar --}}
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 bg-white/50 backdrop-blur-md border border-slate-200/60 rounded-3xl p-4 shadow-sm">
+        <div class="relative w-full md:w-80 group text-slate-400 focus-within:text-slate-800">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none transition-colors">
+                <span class="material-symbols-outlined text-[18px]">search</span>
+            </div>
+            <input type="text" placeholder="Cari klien atau perusahaan..." 
+                class="w-full bg-white border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-sm font-medium focus:ring-4 focus:ring-slate-800/5 focus:border-slate-800 transition-all outline-none text-slate-800 shadow-sm">
+        </div>
+        
+        <a href="{{ route('admin.clients.create') }}" 
+            class="w-full md:w-auto bg-slate-900 text-white px-8 py-3 rounded-2xl font-black text-[11px] uppercase tracking-[0.15em] flex items-center justify-center gap-2 hover:bg-slate-800 transition-all shadow-xl shadow-slate-900/20 active:scale-95 group">
+            <span class="material-symbols-outlined text-[18px] group-hover:rotate-90 transition-transform">add</span>
+            Tambah Klien Baru
+        </a>
+    </div>
 
     {{-- Flash Message --}}
     @if(session('success'))
-    <div class="bg-green-50 border border-green-200 text-green-700 px-6 py-4 rounded-xl text-sm font-semibold flex items-center gap-3" data-aos>
-        <span class="material-symbols-outlined text-green-600">check_circle</span>
+    <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-6 py-4 rounded-2xl text-sm font-bold flex items-center gap-3">
+        <span class="material-symbols-outlined text-emerald-500">check_circle</span>
         {{ session('success') }}
     </div>
     @endif
 
-    {{-- Toolbar --}}
-    <div class="bg-white border border-outline-variant/50 rounded-xl p-4 shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between" data-aos>
-        <p class="text-on-surface-variant text-sm">Total: <span class="font-bold text-on-surface">{{ $clients->count() }}</span> klien terdaftar</p>
-        <a href="{{ route('admin.clients.create') }}" class="bg-primary text-white px-6 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 hover:bg-primary-container transition-all">
-            <span class="material-symbols-outlined text-sm">person_add</span>
-            Tambah Klien
-        </a>
-    </div>
+    {{-- Clients Grid --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @forelse($clients as $client)
+        <div class="group bg-white border border-slate-200 rounded-[2rem] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col p-6">
+            {{-- Header Card --}}
+            <div class="flex items-start justify-between mb-5">
+                <div class="flex items-center gap-4">
+                    {{-- Avatar Initials --}}
+                    <div class="w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-700 font-black text-xl shadow-sm">
+                        {{ strtoupper(substr($client->client_name, 0, 1)) }}
+                    </div>
+                    <div>
+                        <h3 class="text-base font-black text-slate-800 leading-tight">
+                            {{ $client->client_name }}
+                        </h3>
+                        <p class="text-xs font-bold text-slate-400 mt-0.5">{{ $client->company_name ?: 'Personal / Individu' }}</p>
+                    </div>
+                </div>
+            </div>
 
-    {{-- Data Table --}}
-    <div class="bg-white border border-outline-variant/50 rounded-xl overflow-hidden shadow-sm" data-aos>
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead class="bg-[#F1F5F9] border-b border-outline-variant/50">
-                    <tr>
-                        <th class="py-4 px-6 text-[11px] font-black uppercase tracking-widest text-on-surface">Nama Klien</th>
-                        <th class="py-4 px-6 text-[11px] font-black uppercase tracking-widest text-on-surface">Perusahaan</th>
-                        <th class="py-4 px-6 text-[11px] font-black uppercase tracking-widest text-on-surface">Testimonial</th>
-                        <th class="py-4 px-6 text-[11px] font-black uppercase tracking-widest text-on-surface w-24">Status</th>
-                        <th class="py-4 px-6 text-[11px] font-black uppercase tracking-widest text-on-surface w-28 text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-outline-variant/30">
-                    @forelse($clients as $client)
-                    <tr class="hover:bg-surface-container-low transition-colors group">
-                        <td class="py-4 px-6">
-                            <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center text-xs font-bold flex-shrink-0">
-                                    {{ strtoupper(substr($client->client_name, 0, 1)) }}
-                                </div>
-                                <div>
-                                    <p class="font-bold text-sm text-on-surface">{{ $client->client_name }}</p>
-                                    @if($client->email)
-                                    <p class="text-[11px] text-on-surface-variant">{{ $client->email }}</p>
-                                    @endif
-                                </div>
-                            </div>
-                        </td>
-                        <td class="py-4 px-6 text-sm text-on-surface-variant">{{ $client->company_name ?: '-' }}</td>
-                        <td class="py-4 px-6 text-sm text-on-surface-variant max-w-xs">
-                            @if($client->testimonial)
-                                <p class="truncate italic">"{{ Str::limit($client->testimonial, 60) }}"</p>
-                            @else
-                                <span class="text-outline-variant text-xs italic">Belum diisi</span>
-                            @endif
-                        </td>
-                        <td class="py-4 px-6">
-                            @if($client->status === 'active')
-                                <span class="px-3 py-1 rounded-full text-[10px] font-black bg-green-100 text-green-700 uppercase">Active</span>
-                            @else
-                                <span class="px-3 py-1 rounded-full text-[10px] font-black bg-gray-100 text-gray-500 uppercase">Inactive</span>
-                            @endif
-                        </td>
-                        <td class="py-4 px-6 text-right">
-                            <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <a href="{{ route('admin.clients.edit', $client) }}" class="text-primary hover:scale-110 transition-transform" title="Edit">
-                                    <span class="material-symbols-outlined text-[20px]">edit</span>
-                                </a>
-                                <form action="{{ route('admin.clients.destroy', $client) }}" method="POST" onsubmit="return confirm('Yakin hapus klien ini?')">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="text-error hover:scale-110 transition-transform" title="Hapus">
-                                        <span class="material-symbols-outlined text-[20px]">delete</span>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="py-12 text-center text-on-surface-variant">
-                            <span class="material-symbols-outlined text-4xl text-outline-variant mb-2 block">group_off</span>
-                            <p class="font-bold">Belum ada data klien.</p>
-                            <p class="text-sm">Klik "Tambah Klien" untuk memulai.</p>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+            {{-- Body Card (Testimonial) --}}
+            <div class="flex-1 bg-slate-50 rounded-[1.5rem] p-5 border border-slate-100 relative mt-2 mb-6">
+                <span class="material-symbols-outlined text-4xl text-slate-200 absolute top-3 right-3 select-none">format_quote</span>
+                @if($client->testimonial)
+                    <p class="text-sm text-slate-600 leading-relaxed italic relative z-10 line-clamp-3">
+                        "{{ $client->testimonial }}"
+                    </p>
+                @else
+                    <p class="text-sm text-slate-400 leading-relaxed italic relative z-10 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[16px]">info</span>
+                        Belum ada testimonial
+                    </p>
+                @endif
+            </div>
+
+            {{-- Footer Area --}}
+            <div class="pt-5 border-t border-slate-100 flex items-center justify-between">
+                {{-- Status Badge --}}
+                @if($client->status === 'active')
+                    <span class="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Active
+                    </span>
+                @else
+                    <span class="px-3 py-1.5 rounded-xl bg-slate-100 text-slate-500 border border-slate-200 text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
+                        Inactive
+                    </span>
+                @endif
+
+                <div class="flex items-center gap-1">
+                    <a href="{{ route('admin.clients.edit', $client) }}" 
+                        class="w-8 h-8 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center hover:bg-slate-800 hover:text-white transition-all">
+                        <span class="material-symbols-outlined text-[16px]">edit</span>
+                    </a>
+                    <form action="{{ route('admin.clients.destroy', $client) }}" method="POST" class="inline-block" onsubmit="return confirm('Hapus klien ini beserta testimonialnya?')">
+                        @csrf @method('DELETE')
+                        <button type="submit" 
+                            class="w-8 h-8 rounded-full bg-red-50 text-red-400 flex items-center justify-center hover:bg-red-500 hover:text-white transition-all">
+                            <span class="material-symbols-outlined text-[16px]">delete</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
+        @empty
+        <div class="col-span-full py-20 bg-white border border-slate-200 border-dashed rounded-[2rem] text-center flex flex-col items-center justify-center">
+            <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-4xl text-slate-300">group_off</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800 mb-1">Belum Ada Klien</h3>
+            <p class="text-sm text-slate-400 mb-6 max-w-md">Tambahkan profil klien beserta testimonial mereka untuk meningkatkan kepercayaan pengunjung website.</p>
+            <a href="{{ route('admin.clients.create') }}" class="text-[11px] font-black uppercase tracking-widest text-slate-800 bg-slate-100 px-6 py-3 rounded-xl hover:bg-slate-200 transition-all">
+                Tambah Klien Pertama
+            </a>
+        </div>
+        @endforelse
     </div>
 </div>
 @endsection

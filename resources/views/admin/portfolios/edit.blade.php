@@ -19,7 +19,7 @@
                         <div class="space-y-2">
                             <label for="project_name" class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Nama Proyek</label>
                             <input type="text" name="project_name" id="project_name" required value="{{ old('project_name', $portfolio->project_name) }}"
-                                class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all font-bold outline-none">
+                                class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-slate-800/10 focus:border-slate-800 transition-all font-bold outline-none">
                             @error('project_name') <p class="text-error text-[10px] mt-1">{{ $message }}</p> @enderror
                         </div>
 
@@ -27,7 +27,7 @@
                         <div class="space-y-2">
                             <label for="category_id" class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Kategori</label>
                             <select name="category_id" id="category_id" required
-                                class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all font-bold outline-none appearance-none cursor-pointer">
+                                class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-slate-800/10 focus:border-slate-800 transition-all font-bold outline-none appearance-none cursor-pointer">
                                 @foreach($categories as $cat)
                                     <option value="{{ $cat->id }}" {{ old('category_id', $portfolio->category_id) == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                                 @endforeach
@@ -40,13 +40,13 @@
                         <div class="space-y-2">
                             <label for="client_name" class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Nama Klien</label>
                             <input type="text" name="client_name" id="client_name" value="{{ old('client_name', $portfolio->client_name) }}"
-                                class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all font-bold outline-none">
+                                class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-slate-800/10 focus:border-slate-800 transition-all font-bold outline-none">
                         </div>
                         
                         {{-- Status --}}
                         <div class="space-y-2">
                             <label class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Status</label>
-                            <select name="status" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all font-bold outline-none appearance-none cursor-pointer">
+                            <select name="status" class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-slate-800/10 focus:border-slate-800 transition-all font-bold outline-none appearance-none cursor-pointer">
                                 <option value="active" {{ $portfolio->status == 'active' ? 'selected' : '' }}>Active</option>
                                 <option value="done" {{ $portfolio->status == 'done' ? 'selected' : '' }}>Done</option>
                                 <option value="draft" {{ $portfolio->status == 'draft' ? 'selected' : '' }}>Draft</option>
@@ -58,7 +58,7 @@
                     <div class="space-y-2">
                         <label for="description" class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Deskripsi Proyek</label>
                         <textarea name="description" id="description" rows="6"
-                            class="w-full bg-slate-50 border border-slate-200 rounded-[1.5rem] px-6 py-5 text-sm leading-relaxed focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none resize-none">{{ old('description', $portfolio->description) }}</textarea>
+                            class="w-full bg-slate-50 border border-slate-200 rounded-[1.5rem] px-6 py-5 text-sm leading-relaxed focus:bg-white focus:ring-4 focus:ring-slate-800/10 focus:border-slate-800 transition-all outline-none resize-none">{{ old('description', $portfolio->description) }}</textarea>
                     </div>
                 </div>
             </div>
@@ -69,15 +69,15 @@
                     <label class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Banner Proyek</label>
                     <input type="file" name="thumbnail_image" id="imageInput" class="hidden" accept="image/*" onchange="previewImage(event)">
                     <div onclick="document.getElementById('imageInput').click()" 
-                         class="aspect-video w-full rounded-2xl bg-slate-50 border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-slate-100 hover:border-primary transition-all group overflow-hidden relative">
+                         class="aspect-video w-full rounded-2xl bg-slate-50 border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-slate-100 hover:border-slate-800 transition-all group overflow-hidden relative">
                         
                         {{-- Foto Lama atau Pratinjau --}}
                         <img id="imagePreview" src="{{ $portfolio->thumbnail_image ? asset('storage/' . $portfolio->thumbnail_image) : '' }}" 
                              class="absolute inset-0 w-full h-full object-cover {{ $portfolio->thumbnail_image ? '' : 'hidden' }}">
                         
                         <div id="uploadPlaceholder" class="flex flex-col items-center gap-2 {{ $portfolio->thumbnail_image ? 'hidden' : '' }}">
-                            <span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-all text-4xl">add_photo_alternate</span>
-                            <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 group-hover:text-primary transition-colors text-center">Ganti Foto</p>
+                            <span class="material-symbols-outlined text-slate-300 group-hover:text-slate-800 transition-all text-4xl">add_photo_alternate</span>
+                            <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-800 transition-colors text-center">Ganti Foto</p>
                         </div>
 
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
@@ -91,7 +91,7 @@
                     <label class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Galeri Proyek (Multiple)</label>
                     <input type="file" name="gallery_images[]" id="galleryInput" class="hidden" accept="image/*" multiple onchange="previewGallery(event)">
                     <div onclick="document.getElementById('galleryInput').click()" 
-                         class="min-h-[150px] w-full rounded-2xl bg-slate-50 border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-slate-100 hover:border-primary transition-all group overflow-hidden p-6 relative">
+                         class="min-h-[150px] w-full rounded-2xl bg-slate-50 border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-3 cursor-pointer hover:bg-slate-100 hover:border-slate-800 transition-all group overflow-hidden p-6 relative">
                         
                         <div id="galleryPreviewContainer" class="grid grid-cols-3 gap-2 w-full {{ $portfolio->gallery_images ? '' : 'hidden' }}">
                             @if($portfolio->gallery_images)
@@ -104,8 +104,8 @@
                         </div>
                         
                         <div id="galleryPlaceholder" class="flex flex-col items-center gap-2 {{ $portfolio->gallery_images ? 'hidden' : '' }}">
-                            <span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-all text-4xl">collections</span>
-                            <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 group-hover:text-primary transition-colors text-center">Ganti Galeri Foto</p>
+                            <span class="material-symbols-outlined text-slate-300 group-hover:text-slate-800 transition-all text-4xl">collections</span>
+                            <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-800 transition-colors text-center">Ganti Galeri Foto</p>
                         </div>
 
                         <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity rounded-2xl">

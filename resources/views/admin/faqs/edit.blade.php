@@ -32,26 +32,26 @@
             <div class="space-y-3">
                 <label for="question_id" class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Pertanyaan (Indonesia) *</label>
                 <input type="text" name="question_id" id="question_id" required value="{{ $questionId }}"
-                    class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all font-bold outline-none">
+                    class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-slate-800/10 focus:border-slate-800 transition-all font-bold outline-none">
             </div>
 
             <div class="space-y-3">
                 <label for="question_en" class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Question (English)</label>
                 <input type="text" name="question_en" id="question_en" value="{{ $questionEn }}"
-                    class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all font-bold outline-none">
+                    class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-slate-800/10 focus:border-slate-800 transition-all font-bold outline-none">
             </div>
 
             {{-- Jawaban --}}
             <div class="space-y-3">
                 <label for="answer_id" class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Jawaban (Indonesia) *</label>
                 <textarea name="answer_id" id="answer_id" rows="6" required
-                    class="w-full bg-slate-50 border border-slate-200 rounded-[1.5rem] px-6 py-5 text-sm leading-relaxed focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none resize-none">{{ $answerId }}</textarea>
+                    class="w-full bg-slate-50 border border-slate-200 rounded-[1.5rem] px-6 py-5 text-sm leading-relaxed focus:bg-white focus:ring-4 focus:ring-slate-800/10 focus:border-slate-800 transition-all outline-none resize-none">{{ $answerId }}</textarea>
             </div>
 
             <div class="space-y-3">
                 <label for="answer_en" class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Answer (English)</label>
                 <textarea name="answer_en" id="answer_en" rows="6"
-                    class="w-full bg-slate-50 border border-slate-200 rounded-[1.5rem] px-6 py-5 text-sm leading-relaxed focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none resize-none">{{ $answerEn }}</textarea>
+                    class="w-full bg-slate-50 border border-slate-200 rounded-[1.5rem] px-6 py-5 text-sm leading-relaxed focus:bg-white focus:ring-4 focus:ring-slate-800/10 focus:border-slate-800 transition-all outline-none resize-none">{{ $answerEn }}</textarea>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -59,7 +59,7 @@
                 <div class="space-y-3">
                     <label for="sort_order" class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Urutan Tampil</label>
                     <input type="number" name="sort_order" id="sort_order" value="{{ old('sort_order', $faq->sort_order) }}"
-                        class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all font-bold outline-none">
+                        class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-slate-800/10 focus:border-slate-800 transition-all font-bold outline-none">
                 </div>
 
                 {{-- Status --}}
@@ -85,7 +85,7 @@
 
         {{-- Action --}}
         <button type="submit" 
-            class="w-full bg-primary text-white py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-primary/20 hover:bg-primary/90 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
+            class="w-full bg-slate-900 text-white py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-slate-900/20 hover:bg-slate-800 hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-3">
             <span class="material-symbols-outlined">save</span>
             Perbarui FAQ
         </button>

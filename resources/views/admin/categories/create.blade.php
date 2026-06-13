@@ -15,7 +15,7 @@
                 <label for="name" class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Nama Kategori</label>
                 <input type="text" name="name" id="name" required value="{{ old('name') }}"
                     placeholder="Contoh: Web Application, Mobile App, Branding"
-                    class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all font-bold outline-none">
+                    class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-slate-800/10 focus:border-slate-800 transition-all font-bold outline-none">
                 @error('name') <p class="text-error text-[10px] mt-1">{{ $message }}</p> @enderror
             </div>
 
@@ -25,7 +25,7 @@
                 <div class="grid grid-cols-2 gap-4">
                     <label class="cursor-pointer">
                         <input type="radio" name="status" value="active" class="peer hidden" checked>
-                        <div class="flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-slate-50 border border-slate-200 peer-checked:bg-primary/5 peer-checked:border-primary peer-checked:text-primary transition-all font-bold text-xs uppercase tracking-widest">
+                        <div class="flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-slate-50 border border-slate-200 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 transition-all font-bold text-xs uppercase tracking-widest">
                             <span class="material-symbols-outlined text-xl">check_circle</span>
                             Aktif
                         </div>

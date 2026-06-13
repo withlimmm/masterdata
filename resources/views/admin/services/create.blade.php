@@ -2,88 +2,184 @@
 
 @section('title', 'Tambah Layanan - Rakira CMS')
 @section('page_title', 'Tambah Layanan Baru')
+@section('page_subtitle', 'Masukkan detail layanan baru yang akan ditampilkan di beranda.')
 
 @section('content')
-<div class="max-w-4xl mx-auto pb-20">
+<div class="max-w-6xl mx-auto pb-20">
     {{-- Header Actions --}}
     <div class="mb-8 flex items-center justify-between animate-in slide-in-from-left duration-500">
-        <a href="{{ route('admin.services.index') }}" class="flex items-center gap-2 text-slate-400 hover:text-slate-900 transition-colors group">
-            <span class="material-symbols-outlined group-hover:-translate-x-1 transition-transform">arrow_back</span>
-            <span class="text-xs font-black uppercase tracking-widest">Kembali ke Daftar</span>
+        <a href="{{ route('admin.services.index') }}" class="flex items-center gap-3 px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm group">
+            <span class="material-symbols-outlined text-[18px] group-hover:-translate-x-1 transition-transform">arrow_back</span>
+            <span class="text-[10px] font-black uppercase tracking-widest">Kembali ke Daftar</span>
         </a>
     </div>
 
     <form action="{{ route('admin.services.store') }}" method="POST" class="space-y-8 animate-in fade-in duration-700">
         @csrf
         
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
             {{-- Kiri: Detail Info --}}
-            <div class="lg:col-span-8 space-y-6">
-                <div class="bg-white border border-slate-200 rounded-[2rem] p-8 md:p-10 shadow-sm space-y-6">
-                    {{-- Judul --}}
-                    <div class="space-y-2">
-                        <label for="title_id" class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Judul Layanan (Indonesia)</label>
-                        <input type="text" name="title_id" id="title_id" required value="{{ old('title_id') }}"
-                            placeholder="Contoh: Web Development Premium"
-                            class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all font-bold outline-none">
+            <div class="xl:col-span-8 space-y-8">
+                
+                {{-- Penamaan Layanan --}}
+                <div class="bg-white border border-slate-200 rounded-[2rem] p-8 md:p-10 shadow-sm relative overflow-hidden group hover:border-slate-300 transition-colors">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[100px] -z-0 opacity-50 group-hover:scale-110 transition-transform"></div>
+                    
+                    <div class="flex items-center gap-4 mb-8 relative z-10">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-inner">
+                            <span class="material-symbols-outlined text-xl">subtitles</span>
+                        </div>
+                        <div>
+                            <h3 class="font-black text-slate-800 uppercase tracking-widest text-xs mb-1">Informasi Dasar</h3>
+                            <p class="text-[10px] text-slate-400 font-medium">Judul dan penamaan layanan utama</p>
+                        </div>
                     </div>
 
-                    <div class="space-y-2">
-                        <label for="title_en" class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Service Title (English)</label>
-                        <input type="text" name="title_en" id="title_en" value="{{ old('title_en') }}"
-                            placeholder="Example: Premium Web Development"
-                            class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all font-bold outline-none">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
+                        <div class="space-y-2">
+                            <label for="title_id" class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Judul Layanan (ID) <span class="text-red-400">*</span></label>
+                            <input type="text" name="title_id" id="title_id" required value="{{ old('title_id') }}"
+                                placeholder="Contoh: Web Development Premium"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-slate-800/10 focus:border-slate-800 transition-all font-bold outline-none text-slate-700 placeholder-slate-300">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="title_en" class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Service Title (EN)</label>
+                            <input type="text" name="title_en" id="title_en" value="{{ old('title_en') }}"
+                                placeholder="Example: Premium Web Development"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-sm focus:bg-white focus:ring-4 focus:ring-slate-800/10 focus:border-slate-800 transition-all font-bold outline-none text-slate-700 placeholder-slate-300">
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Deskripsi Singkat --}}
+                <div class="bg-white border border-slate-200 rounded-[2rem] p-8 md:p-10 shadow-sm hover:border-slate-300 transition-colors">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-inner">
+                            <span class="material-symbols-outlined text-xl">short_text</span>
+                        </div>
+                        <div>
+                            <h3 class="font-black text-slate-800 uppercase tracking-widest text-xs mb-1">Deskripsi Singkat</h3>
+                            <p class="text-[10px] text-slate-400 font-medium">Teks pendek untuk kartu layanan di beranda</p>
+                        </div>
                     </div>
 
-                    {{-- Deskripsi Singkat --}}
-                    <div class="space-y-2">
-                        <label for="short_description_id" class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Deskripsi Singkat (Indonesia)</label>
-                        <textarea name="short_description_id" id="short_description_id" rows="3" required
-                            placeholder="Tuliskan 1-2 kalimat menarik untuk kartu layanan di beranda..."
-                            class="w-full bg-slate-50 border border-slate-200 rounded-[1.5rem] px-6 py-5 text-sm leading-relaxed focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none resize-none">{{ old('short_description_id') }}</textarea>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label for="short_description_id" class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Teks Pendek (ID) <span class="text-red-400">*</span></label>
+                            <textarea name="short_description_id" id="short_description_id" rows="4" required
+                                placeholder="Tuliskan 1-2 kalimat ringkas namun menarik untuk menarik perhatian klien..."
+                                class="w-full bg-slate-50 border border-slate-200 rounded-[1.5rem] px-6 py-5 text-sm leading-relaxed focus:bg-white focus:ring-4 focus:ring-slate-800/10 focus:border-slate-800 transition-all outline-none resize-none text-slate-700 placeholder-slate-300">{{ old('short_description_id') }}</textarea>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="short_description_en" class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Short Text (EN)</label>
+                            <textarea name="short_description_en" id="short_description_en" rows="4"
+                                placeholder="Write 1-2 concise and engaging sentences to grab clients' attention..."
+                                class="w-full bg-slate-50 border border-slate-200 rounded-[1.5rem] px-6 py-5 text-sm leading-relaxed focus:bg-white focus:ring-4 focus:ring-slate-800/10 focus:border-slate-800 transition-all outline-none resize-none text-slate-700 placeholder-slate-300">{{ old('short_description_en') }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Deskripsi Lengkap --}}
+                <div class="bg-white border border-slate-200 rounded-[2rem] p-8 md:p-10 shadow-sm hover:border-slate-300 transition-colors">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-inner">
+                            <span class="material-symbols-outlined text-xl">article</span>
+                        </div>
+                        <div>
+                            <h3 class="font-black text-slate-800 uppercase tracking-widest text-xs mb-1">Konten Deskripsi Penuh</h3>
+                            <p class="text-[10px] text-slate-400 font-medium">Penjelasan mendalam saat layanan di-klik detailnya</p>
+                        </div>
                     </div>
 
-                    <div class="space-y-2">
-                        <label for="short_description_en" class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Short Description (English)</label>
-                        <textarea name="short_description_en" id="short_description_en" rows="3"
-                            placeholder="Write 1-2 engaging sentences for the service card..."
-                            class="w-full bg-slate-50 border border-slate-200 rounded-[1.5rem] px-6 py-5 text-sm leading-relaxed focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none resize-none">{{ old('short_description_en') }}</textarea>
-                    </div>
+                    <div class="space-y-8">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between ml-1">
+                                <label for="full_description_id" class="text-[10px] font-black uppercase tracking-widest text-slate-400">Konten Detail (Indonesia)</label>
+                                <span class="text-[9px] font-bold text-slate-300 uppercase tracking-wider bg-slate-50 px-2 py-1 rounded-md border border-slate-100">ID</span>
+                            </div>
+                            <textarea name="full_description_id" id="full_description_id" rows="6"
+                                placeholder="Jelaskan secara komprehensif apa saja yang termasuk dalam layanan ini, benefit, fitur, dll..."
+                                class="w-full bg-slate-50 border border-slate-200 rounded-[1.5rem] px-6 py-5 text-sm leading-relaxed focus:bg-white focus:ring-4 focus:ring-slate-800/10 focus:border-slate-800 transition-all outline-none resize-y text-slate-700 placeholder-slate-300">{{ old('full_description_id') }}</textarea>
+                        </div>
 
-                    {{-- Deskripsi Lengkap --}}
-                    <div class="space-y-2">
-                        <label for="full_description_id" class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Konten Detail (Indonesia)</label>
-                        <textarea name="full_description_id" id="full_description_id" rows="10"
-                            placeholder="Jelaskan secara mendalam tentang layanan ini..."
-                            class="w-full bg-slate-50 border border-slate-200 rounded-[1.5rem] px-6 py-5 text-sm leading-relaxed focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none resize-none">{{ old('full_description_id') }}</textarea>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label for="full_description_en" class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Description (English)</label>
-                        <textarea name="full_description_en" id="full_description_en" rows="10"
-                            placeholder="Explain this service in detail..."
-                            class="w-full bg-slate-50 border border-slate-200 rounded-[1.5rem] px-6 py-5 text-sm leading-relaxed focus:bg-white focus:ring-4 focus:ring-primary/5 focus:border-primary transition-all outline-none resize-none">{{ old('full_description_en') }}</textarea>
+                        <div class="space-y-3 pt-6 border-t border-slate-100 border-dashed">
+                            <div class="flex items-center justify-between ml-1">
+                                <label for="full_description_en" class="text-[10px] font-black uppercase tracking-widest text-slate-400">Full Description (English)</label>
+                                <span class="text-[9px] font-bold text-slate-300 uppercase tracking-wider bg-slate-50 px-2 py-1 rounded-md border border-slate-100">EN</span>
+                            </div>
+                            <textarea name="full_description_en" id="full_description_en" rows="6"
+                                placeholder="Explain comprehensively what is included in this service, benefits, features, etc..."
+                                class="w-full bg-slate-50 border border-slate-200 rounded-[1.5rem] px-6 py-5 text-sm leading-relaxed focus:bg-white focus:ring-4 focus:ring-slate-800/10 focus:border-slate-800 transition-all outline-none resize-y text-slate-700 placeholder-slate-300">{{ old('full_description_en') }}</textarea>
+                        </div>
                     </div>
                 </div>
             </div>
 
             {{-- Kanan: Icon & Status --}}
-            <div class="lg:col-span-4 space-y-8">
+            <div class="xl:col-span-4 space-y-8">
+                
+                {{-- Status --}}
+                <div class="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-sm">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="material-symbols-outlined text-slate-400">tune</span>
+                        <label class="text-[11px] font-black uppercase tracking-widest text-slate-800">Status Publikasi</label>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="status" value="active" class="peer hidden" checked>
+                            <div class="flex items-center gap-4 px-6 py-4 rounded-[1.25rem] bg-slate-50 border border-slate-200 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 transition-all group hover:border-emerald-300">
+                                <div class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center peer-checked:border-emerald-500 group-hover:scale-110 transition-transform shadow-sm">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-slate-200 peer-checked:bg-emerald-500 transition-colors"></span>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-black uppercase tracking-widest mb-0.5">Aktif / Terbit</p>
+                                    <p class="text-[10px] text-slate-400 font-medium normal-case tracking-normal">Tampil di beranda publik</p>
+                                </div>
+                            </div>
+                        </label>
+                        
+                        <label class="cursor-pointer">
+                            <input type="radio" name="status" value="draft" class="peer hidden" {{ old('status') == 'draft' ? 'checked' : '' }}>
+                            <div class="flex items-center gap-4 px-6 py-4 rounded-[1.25rem] bg-slate-50 border border-slate-200 peer-checked:bg-slate-900 peer-checked:border-slate-900 peer-checked:text-white transition-all group hover:border-slate-400">
+                                <div class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center peer-checked:border-slate-700 group-hover:scale-110 transition-transform shadow-sm">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-slate-200 peer-checked:bg-white transition-colors"></span>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-black uppercase tracking-widest mb-0.5">Simpan Draft</p>
+                                    <p class="text-[10px] text-slate-400 peer-checked:text-slate-300 font-medium normal-case tracking-normal">Disembunyikan sementara</p>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
                 {{-- Icon Picker --}}
-                <div class="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-sm space-y-6">
-                    <label class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Pilih Ikon Layanan</label>
+                <div class="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-sm">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="material-symbols-outlined text-slate-400">category</span>
+                        <label class="text-[11px] font-black uppercase tracking-widest text-slate-800">Ikon Representasi</label>
+                    </div>
                     
                     {{-- Preview --}}
-                    <div class="flex items-center justify-center p-8 bg-slate-50 rounded-2xl border border-slate-100">
-                        <div class="w-16 h-16 bg-white rounded-2xl shadow-sm flex items-center justify-center text-primary border border-slate-100">
-                            <span id="iconPreview" class="material-symbols-outlined text-4xl">category</span>
+                    <div class="flex flex-col items-center justify-center p-8 bg-slate-50 rounded-3xl border border-slate-200/60 mb-6 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-grid-slate-100/[0.2] bg-[size:20px_20px]"></div>
+                        
+                        <div class="w-20 h-20 bg-white rounded-[1.5rem] shadow-md flex items-center justify-center text-slate-800 border border-slate-100 relative z-10 hover:scale-110 hover:shadow-lg transition-all duration-500 hover:-rotate-3">
+                            <span id="iconPreview" class="material-symbols-outlined text-[40px]">category</span>
+                        </div>
+                        
+                        <div class="mt-5 relative z-10 w-full">
+                            <input type="text" name="icon_image" id="iconInput" value="{{ old('icon_image', 'category') }}" readonly
+                                class="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-[11px] font-black text-center text-slate-600 uppercase tracking-widest outline-none shadow-sm cursor-default">
                         </div>
                     </div>
 
-                    {{-- Input & Popular Icons --}}
+                    {{-- Popular Icons Grid --}}
                     <div class="space-y-4">
-                        <input type="text" name="icon_image" id="iconInput" value="{{ old('icon_image', 'category') }}" readonly
-                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-5 py-3 text-xs font-black text-center uppercase tracking-widest outline-none">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">Rekomendasi Ikon</p>
                         
                         <div class="grid grid-cols-4 gap-2">
                             @php
@@ -96,44 +192,27 @@
                             @endphp
                             @foreach($icons as $icon)
                                 <button type="button" onclick="selectIcon('{{ $icon }}')" 
-                                    class="h-10 rounded-lg border border-slate-100 hover:border-primary hover:text-primary transition-all flex items-center justify-center bg-slate-50/50 hover:bg-white hover:shadow-md group">
-                                    <span class="material-symbols-outlined text-xl group-hover:scale-110 transition-transform">{{ $icon }}</span>
+                                    class="h-12 rounded-[14px] border border-slate-100 hover:border-slate-800 hover:text-white hover:bg-slate-800 transition-all flex items-center justify-center bg-slate-50/50 text-slate-500 shadow-sm active:scale-95">
+                                    <span class="material-symbols-outlined text-xl">{{ $icon }}</span>
                                 </button>
                             @endforeach
                         </div>
-                        <p class="text-[9px] text-slate-400 text-center italic">Klik salah satu ikon di atas untuk memilih</p>
+                        <p class="text-[9px] text-slate-400 text-center font-medium pt-2">Klik salah satu ikon untuk memilih</p>
                     </div>
                 </div>
 
-                {{-- Status --}}
-                <div class="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-sm space-y-4">
-                    <label class="text-[11px] font-black uppercase tracking-widest text-slate-400 ml-1">Status Publikasi</label>
-                    <div class="grid grid-cols-1 gap-3">
-                        <label class="cursor-pointer">
-                            <input type="radio" name="status" value="active" class="peer hidden" checked>
-                            <div class="flex items-center gap-3 px-6 py-4 rounded-xl bg-slate-50 border border-slate-200 peer-checked:bg-primary/5 peer-checked:border-primary peer-checked:text-primary transition-all group">
-                                <span class="material-symbols-outlined text-xl">public</span>
-                                <span class="text-xs font-black uppercase tracking-widest">Aktif / Publik</span>
-                            </div>
-                        </label>
-                        <label class="cursor-pointer">
-                            <input type="radio" name="status" value="draft" class="peer hidden" {{ old('status') == 'draft' ? 'checked' : '' }}>
-                            <div class="flex items-center gap-3 px-6 py-4 rounded-xl bg-slate-50 border border-slate-200 peer-checked:bg-slate-900 peer-checked:border-slate-900 peer-checked:text-white transition-all group">
-                                <span class="material-symbols-outlined text-xl">drafts</span>
-                                <span class="text-xs font-black uppercase tracking-widest">Simpan Draft</span>
-                            </div>
-                        </label>
-                    </div>
-                </div>
             </div>
         </div>
 
-        {{-- Action Buttons --}}
-        <div class="flex flex-col sm:flex-row items-center justify-end gap-4 pt-6 border-t border-slate-100">
+        {{-- Action Buttons Bottom --}}
+        <div class="bg-white border border-slate-200 rounded-[2rem] p-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 sticky bottom-6 z-40">
+            <div class="text-xs text-slate-400 font-medium hidden md:block">
+                Pastikan semua isian wajib (<span class="text-red-400">*</span>) telah diisi.
+            </div>
             <button type="submit" 
-                class="w-full sm:w-auto bg-slate-900 text-white px-14 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl hover:bg-slate-800 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
+                class="w-full sm:w-auto bg-slate-900 text-white px-10 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.15em] shadow-xl shadow-slate-900/20 hover:bg-slate-800 hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-3">
                 <span class="material-symbols-outlined text-xl">publish</span>
-                Terbitkan Layanan
+                Simpan & Terbitkan
             </button>
         </div>
     </form>
@@ -141,8 +220,20 @@
 
 <script>
     function selectIcon(iconName) {
-        document.getElementById('iconInput').value = iconName;
-        document.getElementById('iconPreview').innerText = iconName;
+        const input = document.getElementById('iconInput');
+        const preview = document.getElementById('iconPreview');
+        
+        // Add subtle animation
+        preview.style.transform = 'scale(0.8) rotate(10deg)';
+        preview.style.opacity = '0';
+        
+        setTimeout(() => {
+            input.value = iconName;
+            preview.innerText = iconName;
+            
+            preview.style.transform = 'scale(1) rotate(0deg)';
+            preview.style.opacity = '1';
+        }, 150);
     }
 </script>
 @endsection

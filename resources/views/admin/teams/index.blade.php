@@ -12,7 +12,7 @@
             <h3 class="text-xl font-black text-slate-900 tracking-tight">Daftar Anggota Tim</h3>
             <p class="text-xs text-slate-500 font-bold uppercase tracking-widest mt-1">Total {{ $teams->count() }} Personel</p>
         </div>
-        <a href="{{ route('admin.teams.create') }}" class="inline-flex items-center justify-center gap-2 bg-primary text-white px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+        <a href="{{ route('admin.teams.create') }}" class="inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:bg-slate-800 hover:scale-[1.02] active:scale-95 transition-all">
             <span class="material-symbols-outlined text-lg">add</span>
             Tambah Anggota
         </a>
@@ -40,7 +40,7 @@
 
                     {{-- Actions --}}
                     <div class="flex items-center gap-2 w-full pt-6 border-t border-slate-50">
-                        <a href="{{ route('admin.teams.edit', $team->id) }}" class="flex-1 bg-slate-50 text-slate-600 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-primary hover:text-white transition-all flex items-center justify-center gap-2">
+                        <a href="{{ route('admin.teams.edit', $team->id) }}" class="flex-1 bg-slate-50 text-slate-600 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined text-base">edit</span>
                             Edit
                         </a>
@@ -58,7 +58,7 @@
             <div class="col-span-full bg-slate-50 border-2 border-dashed border-slate-200 rounded-[3rem] p-20 text-center">
                 <span class="material-symbols-outlined text-slate-300 text-6xl mb-4">group_off</span>
                 <p class="text-slate-500 font-bold uppercase tracking-widest text-sm">Belum ada anggota tim.</p>
-                <a href="{{ route('admin.teams.create') }}" class="text-primary font-black text-xs uppercase tracking-widest mt-4 inline-block hover:underline">Klik di sini untuk menambah</a>
+                <a href="{{ route('admin.teams.create') }}" class="text-slate-900 font-black text-xs uppercase tracking-widest mt-4 inline-block hover:underline">Klik di sini untuk menambah</a>
             </div>
         @endforelse
     </div>
