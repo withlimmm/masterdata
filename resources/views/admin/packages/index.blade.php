@@ -46,6 +46,9 @@
 
             {{-- Header --}}
             <div class="text-center mb-6">
+                <span class="inline-block px-3 py-1 mb-3 bg-indigo-50 text-indigo-600 rounded-lg text-[10px] font-bold tracking-widest uppercase border border-indigo-100">
+                    {{ $p->system->system_name ?? 'Sistem Umum' }}
+                </span>
                 <h3 class="text-xl font-black text-slate-800 mb-2">{{ $p->package_name }}</h3>
                 <span class="inline-block px-3 py-1 bg-slate-100 text-slate-500 rounded-lg text-[10px] font-bold tracking-widest uppercase border border-slate-200">
                     {{ $p->package_code }}
@@ -63,28 +66,20 @@
 
             {{-- Features / Limits --}}
             <div class="flex-1 space-y-4 mb-8">
-                <div class="flex items-center gap-3 text-sm text-slate-600 font-medium bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-emerald-500 shadow-sm">
-                        <span class="material-symbols-outlined text-[18px]">check</span>
-                    </div>
-                    <div>
-                        Maksimal <span class="font-bold text-slate-800">{{ number_format($p->package_max_products) }}</span> Produk
-                    </div>
-                </div>
-                
-                <div class="flex items-center gap-3 text-sm text-slate-600 font-medium bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-emerald-500 shadow-sm">
-                        <span class="material-symbols-outlined text-[18px]">check</span>
-                    </div>
-                    <div>Akses Fitur Premium</div>
-                </div>
-                
-                <div class="flex items-center gap-3 text-sm text-slate-600 font-medium bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center text-emerald-500 shadow-sm">
-                        <span class="material-symbols-outlined text-[18px]">check</span>
-                    </div>
-                    <div>Dukungan Prioritas</div>
-                </div>
+                @if($p->package_benefits)
+                    @foreach(explode("\n", str_replace("\r", "", $p->package_benefits)) as $benefit)
+                        @if(trim($benefit) !== '')
+                        <div class="flex items-start gap-3 text-sm text-slate-600 font-medium bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                            <div class="w-8 h-8 shrink-0 rounded-full bg-white flex items-center justify-center text-emerald-500 shadow-sm mt-0.5">
+                                <span class="material-symbols-outlined text-[18px]">check</span>
+                            </div>
+                            <div class="pt-1 leading-tight">{{ $benefit }}</div>
+                        </div>
+                        @endif
+                    @endforeach
+                @else
+                    <div class="text-sm text-slate-400 italic text-center py-4">Belum ada deskripsi benefit</div>
+                @endif
             </div>
 
             {{-- Footer Actions --}}

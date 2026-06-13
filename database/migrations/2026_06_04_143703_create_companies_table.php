@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('mst_companies', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->uuid('vendor_id')->unique();
             $table->uuid('package_id');
             $table->string('company_code', 10)->unique();
             $table->string('company_name', 100);

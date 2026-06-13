@@ -20,6 +20,9 @@ class Company extends Model
             if (empty($company->id)) {
                 $company->id = (string) Str::uuid();
             }
+            if (empty($company->vendor_id)) {
+                $company->vendor_id = (string) Str::uuid();
+            }
             if (empty($company->api_key)) {
                 $company->api_key = 'rk_' . Str::random(32);
             }
@@ -32,6 +35,7 @@ class Company extends Model
     }
 
     protected $fillable = [
+        'vendor_id',
         'package_id',
         'company_code',
         'company_name',

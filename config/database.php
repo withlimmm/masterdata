@@ -64,6 +64,46 @@ return [
             ]) : [],
         ],
 
+        'mysql_pos' => [
+            'driver' => 'mysql',
+            'url' => env('DB_POS_URL'),
+            'host' => env('DB_POS_HOST', '127.0.0.1'),
+            'port' => env('DB_POS_PORT', '3306'),
+            'database' => env('DB_POS_DATABASE', 'db_pos'),
+            'username' => env('DB_POS_USERNAME', 'root'),
+            'password' => env('DB_POS_PASSWORD', ''),
+            'unix_socket' => env('DB_POS_SOCKET', ''),
+            'charset' => env('DB_POS_CHARSET', 'utf8mb4'),
+            'collation' => env('DB_POS_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
+        'mysql_wms' => [
+            'driver' => 'mysql',
+            'url' => env('DB_WMS_URL'),
+            'host' => env('DB_WMS_HOST', '127.0.0.1'),
+            'port' => env('DB_WMS_PORT', '3306'),
+            'database' => env('DB_WMS_DATABASE', 'db_wms'),
+            'username' => env('DB_WMS_USERNAME', 'root'),
+            'password' => env('DB_WMS_PASSWORD', ''),
+            'unix_socket' => env('DB_WMS_SOCKET', ''),
+            'charset' => env('DB_WMS_CHARSET', 'utf8mb4'),
+            'collation' => env('DB_WMS_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),

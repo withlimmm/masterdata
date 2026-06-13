@@ -1238,6 +1238,7 @@
 
             <div class="hidden md:flex items-center gap-8">
                 <a href="/" class="nav-link {{ request()->is('/') ? 'active' : '' }}">{{ __('Beranda') }}</a>
+                <a href="/#paket" class="nav-link">{{ __('Paket Langganan') }}</a>
                 <a href="/layanan" class="nav-link {{ request()->is('layanan*') ? 'active' : '' }}">{{ __('Layanan') }}</a>
                 <a href="/portofolio" class="nav-link {{ request()->is('portofolio*') ? 'active' : '' }}">{{ __('Portofolio') }}</a>
                 <a href="/tentang-kami" class="nav-link {{ request()->is('tentang-kami*') ? 'active' : '' }}">{{ __('Tentang Kami') }}</a>
@@ -1270,6 +1271,10 @@
             <a href="/" class="mobile-link-floating">
                 <span class="material-symbols-outlined notranslate" translate="no">home</span>
                 <span>{{ __('Beranda') }}</span>
+            </a>
+            <a href="/#paket" class="mobile-link-floating">
+                <span class="material-symbols-outlined notranslate" translate="no">local_offer</span>
+                <span>{{ __('Paket Langganan') }}</span>
             </a>
             <a href="/layanan" class="mobile-link-floating">
                 <span class="material-symbols-outlined notranslate" translate="no">design_services</span>

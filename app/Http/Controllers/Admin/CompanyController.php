@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use App\Services\TenantProvisioningService;
 
 class CompanyController extends Controller
 {
@@ -65,13 +66,17 @@ class CompanyController extends Controller
             ]);
 
             // 3. Create Admin User
-            User::create([
+            $adminUser = User::create([
                 'name' => $validated['admin_name'],
                 'email' => $validated['admin_email'],
                 'password' => Hash::make($validated['admin_password']),
                 'role' => 'admin',
                 'company_id' => $company->id,
             ]);
+
+            // 4. Provision to Microservice Database
+            $company->load('package.system'); // Ensure relations are loaded
+            TenantProvisioningService::provision($company, $adminUser, $validated['admin_password']);
 
             DB::commit();
 

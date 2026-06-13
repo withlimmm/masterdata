@@ -14,11 +14,19 @@ class Package extends Model
     protected $table = 'mst_packages';
 
     protected $fillable = [
+        'system_id',
         'package_code',
         'package_name',
-        'package_max_products',
+        'package_description',
+        'package_benefits',
         'package_price',
+        'is_popular',
     ];
+
+    public function system()
+    {
+        return $this->belongsTo(System::class, 'system_id');
+    }
 
     /**
      * Get the companies that subscribe to this package.

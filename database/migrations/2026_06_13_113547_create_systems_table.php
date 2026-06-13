@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mst_packages', function (Blueprint $table) {
+        Schema::create('mst_systems', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('package_code', 20)->unique();
-            $table->string('package_name', 50);
-            $table->text('package_benefits')->nullable();
-            $table->decimal('package_price', 15, 2);
+            $table->string('system_code', 20)->unique();
+            $table->string('system_name', 100);
+            $table->text('description')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mst_packages');
+        Schema::dropIfExists('mst_systems');
     }
 };

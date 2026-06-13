@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\SaasTenantController;
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\SitemapController;
 
 /*
@@ -145,12 +146,22 @@ Route::get('/', function () {
         return (object) $service;
     });
 
+    $systems = collect();
+    if (Schema::hasTable('mst_systems')) {
+        $systems = \App\Models\System::with('packages')->latest()->get();
+    }
+
+    $banners = collect();
+    if (Schema::hasTable('banners')) {
+        $banners = \App\Models\Banner::where('is_active', true)->orderBy('sort_order')->take(3)->get();
+    }
+
     $settings = (app()->bound("tenant") ? app("tenant")->config : \App\Models\CompanyConfig::first());
     $whatsAppNumber = $settings?->cfg_phone ?? '6287868184742';
     $whatsAppText = 'Halo, saya ingin konsultasi layanan digital untuk website dan company profile.';
     $whatsAppUrl = 'https://wa.me/' . $whatsAppNumber . '?text=' . urlencode($whatsAppText);
 
-    return view('welcome', compact('clients', 'client_logos', 'faqs', 'services', 'whatsAppNumber', 'whatsAppText', 'whatsAppUrl', 'settings'));
+    return view('welcome', compact('clients', 'client_logos', 'faqs', 'services', 'systems', 'banners', 'whatsAppNumber', 'whatsAppText', 'whatsAppUrl', 'settings'));
 })->name('home');
 
 Route::get('/layanan', function () {
@@ -316,11 +327,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(
     Route::resource('reviews', ReviewController::class);
     Route::resource('faqs', FaqController::class);
     Route::resource('teams', TeamController::class);
+    Route::resource('banners', BannerController::class);
 
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
 
     Route::middleware('super_admin')->group(function () {
+        Route::resource('systems', App\Http\Controllers\Admin\SystemController::class);
         Route::resource('packages', App\Http\Controllers\Admin\PackageController::class);
         Route::post('companies/{company}/regenerate-key', [App\Http\Controllers\Admin\CompanyController::class, 'regenerateApiKey'])->name('companies.regenerate-key');
         Route::resource('companies', App\Http\Controllers\Admin\CompanyController::class);

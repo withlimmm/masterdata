@@ -61,6 +61,34 @@
     }{{ !$loop->last ? ',' : '' }}
     @endforeach
   ]
+</script>
+@endif
+
+@if(isset($systems) && collect($systems)->isNotEmpty())
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "SoftwareApplication",
+  "name": "{{ $settings->company_name ?? 'Rakira Digital' }} SaaS Solutions",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web, iOS, Android",
+  "offers": [
+    @php $isFirstOffer = true; @endphp
+    @foreach($systems as $system)
+        @foreach($system->packages as $package)
+            {!! $isFirstOffer ? '' : ',' !!}
+            {
+              "@@type": "Offer",
+              "name": "{{ $system->system_name }} - {{ $package->package_name }}",
+              "price": "{{ $package->package_price }}",
+              "priceCurrency": "IDR",
+              "billingIncrement": "{{ $package->billing_cycle }}",
+              "description": "{{ str_replace(["\r", "\n"], ' ', strip_tags($package->package_benefits)) }}"
+            }
+            @php $isFirstOffer = false; @endphp
+        @endforeach
+    @endforeach
+  ]
 }
 </script>
 @endif
@@ -766,6 +794,25 @@
     </div>
 </section>
 
+{{-- BANNERS SECTION --}}
+@if(isset($banners) && collect($banners)->isNotEmpty())
+<section class="page-section bg-slate-50 !py-12 border-b border-slate-100">
+    <div class="content-container">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            @foreach($banners as $index => $banner)
+                <a href="{{ $banner->link_url ?? '#' }}" 
+                   class="group relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 {{ $index === 0 && $banners->count() === 3 ? 'md:col-span-2 md:row-span-2 h-[200px] md:h-[424px]' : 'h-[200px]' }}">
+                    <img src="{{ asset('storage/' . $banner->image_path) }}" 
+                         alt="{{ $banner->title }}" 
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </a>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
 {{-- CLIENT TRUST STRIP --}}
 @if(($client_logos ?? collect())->isNotEmpty())
 <section class="page-section !py-16 bg-white border-b border-slate-100 overflow-hidden">
@@ -863,28 +910,158 @@
             <p class="text-slate-500">{{ __('Klik layanan untuk melihat detail dan konsultasikan kebutuhan Anda.') }}</p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-            @forelse($services as $index => $service)
-            <a href="{{ route('services.show', $service->slug) }}" 
-               class="interactive-card {{ $loop->first ? 'lg:col-span-2' : '' }}">
-                <div class="interactive-card-icon">
-                    <span class="material-symbols-outlined notranslate text-2xl text-[#009fe3] transition-colors" translate="no">{{ $service->icon_image ?: 'settings' }}</span>
+        <div class="relative px-4 md:px-10">
+            <div class="swiper layanan-swiper pb-16">
+                <div class="swiper-wrapper">
+                    @forelse($services as $index => $service)
+                    <div class="swiper-slide h-auto">
+                        <a href="{{ route('services.show', $service->slug) }}" 
+                           class="interactive-card flex flex-col h-full group">
+                            <div class="interactive-card-icon">
+                                <span class="material-symbols-outlined notranslate text-2xl text-[#009fe3] transition-colors" translate="no">{{ $service->icon_image ?: 'settings' }}</span>
+                            </div>
+                            <h3 class="interactive-card-title">{{ __t($service->title) }}</h3>
+                            <p class="interactive-card-description flex-grow">{{ __t($service->short_description) }}</p>
+                            <div class="mt-5 flex items-center text-[#009fe3] font-semibold text-sm opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-1">
+                                {{ __('Lihat Detail') }}
+                                <span class="material-symbols-outlined notranslate ml-1 text-sm" translate="no">arrow_forward</span>
+                            </div>
+                        </a>
+                    </div>
+                    @empty
+                    <div class="swiper-slide w-full text-center py-16 text-slate-500 bg-white rounded-2xl">
+                        <p>{{ __('Layanan akan segera hadir.') }}</p>
+                    </div>
+                    @endforelse
                 </div>
-                <h3 class="interactive-card-title">{{ __t($service->title) }}</h3>
-                <p class="interactive-card-description">{{ __t($service->short_description) }}</p>
-                <div class="mt-5 flex items-center text-[#009fe3] font-semibold text-sm opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-1">
-                    {{ __('Lihat Detail') }}
-                    <span class="material-symbols-outlined notranslate ml-1 text-sm" translate="no">arrow_forward</span>
-                </div>
-            </a>
-            @empty
-            <div class="col-span-full text-center py-16 text-slate-500 bg-white rounded-2xl">
-                <p>{{ __('Layanan akan segera hadir.') }}</p>
+                <div class="swiper-pagination"></div>
             </div>
-            @endforelse
+
+            @if(count($services ?? []) > 0)
+            <button class="layanan-prev absolute left-0 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-400 hover:text-[#009fe3] hover:border-[#009fe3] transition-all z-10 hidden md:flex">
+                <span class="material-symbols-outlined notranslate" translate="no">chevron_left</span>
+            </button>
+            <button class="layanan-next absolute right-0 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-400 hover:text-[#009fe3] hover:border-[#009fe3] transition-all z-10 hidden md:flex">
+                <span class="material-symbols-outlined notranslate" translate="no">chevron_right</span>
+            </button>
+            @endif
         </div>
     </div>
 </section>
+
+{{-- PAKET LANGGANAN --}}
+@if(isset($systems) && collect($systems)->isNotEmpty())
+<section class="page-section bg-white" id="paket">
+    <div class="content-container">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+            <span class="section-kicker mx-auto w-fit">{{ __('Paket Langganan') }}</span>
+            <h2 class="section-title">{{ __('Pilih Paket') }}<br><span class="gradient-text">Yang Tepat Untuk Anda</span></h2>
+            <p class="text-slate-500">{{ __('Tersedia berbagai pilihan paket yang dapat disesuaikan dengan skala dan kebutuhan bisnis Anda.') }}</p>
+        </div>
+
+        <div x-data="{ activeTab: '{{ $systems->first()->id ?? '' }}' }">
+            {{-- Tabs --}}
+            <div class="flex flex-wrap justify-center gap-2 mb-12 bg-[#009fe3]/10 w-fit mx-auto p-1.5 rounded-full border border-[#009fe3]/20">
+                @foreach($systems as $system)
+                <button @click="activeTab = '{{ $system->id }}'" 
+                        :class="activeTab === '{{ $system->id }}' ? 'bg-white text-[#009fe3] shadow-sm font-bold' : 'bg-transparent text-slate-600 hover:text-[#009fe3] font-medium'"
+                        class="px-6 py-2.5 rounded-full text-[15px] transition-all duration-300 flex items-center gap-2">
+                    {{ $system->system_name }}
+                </button>
+                @endforeach
+            </div>
+
+            {{-- Packages Content --}}
+            <div class="relative min-h-[400px]">
+                @foreach($systems as $system)
+                <div x-show="activeTab === '{{ $system->id }}'" 
+                     x-transition:enter="transition ease-out duration-500"
+                     x-transition:enter-start="opacity-0 translate-y-8"
+                     x-transition:enter-end="opacity-100 translate-y-0"
+                     style="display: none;"
+                     class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start pt-8 pb-4">
+                    
+                    @forelse($system->packages as $package)
+                    <div x-data="{ showFeatures: {{ $package->is_popular ? 'true' : 'false' }} }" 
+                         class="bg-white rounded-[2rem] p-6 md:p-8 relative flex flex-col h-fit transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 will-change-transform {{ $package->is_popular ? 'border-[3px] border-[#009fe3]/50 shadow-xl z-10 scale-[1.02]' : 'border border-slate-200 shadow-md' }}">
+                        @if($package->is_popular)
+                            <div class="absolute top-0 right-0 bg-[#e6f6fd] text-[#009fe3] px-4 py-2 rounded-bl-2xl rounded-tr-[1.8rem] text-[11px] font-black uppercase tracking-wider shadow-sm z-20 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">star</span>
+                                {{ __('Paling Populer') }}
+                            </div>
+                        @endif
+                        
+                        <div class="mb-5 mt-2 text-center md:text-left">
+                            <h3 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2">{{ $package->package_name }}</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed min-h-[44px]">{{ $package->package_description ?? __('Solusi andalan untuk manajemen bisnis yang efisien dan modern.') }}</p>
+                        </div>
+                        
+                        <div class="mb-8 flex flex-col items-center md:items-start border-b border-slate-100 pb-6">
+                            @if($package->package_price > 0)
+                                <div class="text-3xl font-extrabold text-[#009fe3] tracking-tight">Rp {{ number_format($package->package_price, 0, ',', '.') }}</div>
+                                <div class="mt-2 text-[11px] font-bold text-slate-500 bg-slate-50 px-4 py-1.5 rounded-full border border-slate-200">per outlet / {{ $package->billing_cycle }}</div>
+                            @else
+                                <div class="text-2xl font-extrabold text-[#009fe3] tracking-tight mt-2">{{ __('Konsultasi Harga') }}</div>
+                                <div class="mt-2 text-[11px] font-bold text-slate-500 bg-slate-50 px-4 py-1.5 rounded-full border border-slate-200">{{ __('Dapatkan Penawaran Khusus') }}</div>
+                            @endif
+                        </div>
+
+                        <div class="flex flex-col gap-3 mt-auto w-full mb-6">
+                            <a href="#kontak" class="w-full py-3.5 rounded-xl font-bold text-sm text-center transition-all duration-300 bg-gradient-to-r from-[#009fe3] to-[#0077b3] text-white shadow-md hover:shadow-lg hover:-translate-y-0.5 will-change-transform">
+                                @if($package->package_price > 0)
+                                    {{ __('Pilih Paket') }}
+                                @else
+                                    {{ __('Hubungi Kami') }}
+                                @endif
+                            </a>
+                            <a href="#kontak" class="w-full py-3.5 rounded-xl font-bold text-sm text-center transition-all duration-300 border-2 border-[#009fe3]/20 text-[#009fe3] hover:border-[#009fe3] hover:bg-[#009fe3]/5 will-change-transform">
+                                {{ __('Konsultasi Gratis') }}
+                            </a>
+                        </div>
+                        
+                        {{-- Collapsible Trigger --}}
+                        <div class="text-center w-full mb-2">
+                            <button @click="showFeatures = !showFeatures" class="text-xs font-bold text-[#009fe3] hover:text-[#0077b3] flex items-center justify-center w-full gap-1 transition-all">
+                                <span x-text="showFeatures ? 'Tutup' : 'Lihat Fitur {{ $package->package_name }}'"></span>
+                                <span class="material-symbols-outlined notranslate text-sm transition-transform duration-300" 
+                                      :class="showFeatures ? 'rotate-180' : ''" translate="no">expand_more</span>
+                            </button>
+                        </div>
+
+                        {{-- Collapsible Content --}}
+                        <div x-show="showFeatures" 
+                             x-collapse 
+                             class="pt-5 border-t border-slate-100 w-full overflow-hidden mt-2">
+                            <ul class="space-y-4">
+                                @php
+                                    $benefits = explode("\n", $package->package_benefits);
+                                @endphp
+                                @foreach($benefits as $benefit)
+                                    @if(trim($benefit) !== '')
+                                    <li class="flex items-start gap-3">
+                                        <div class="mt-0.5 rounded-full bg-[#009fe3]/10 p-0.5 flex-shrink-0">
+                                            <span class="material-symbols-outlined notranslate text-[#009fe3] text-[16px]" translate="no">check</span>
+                                        </div>
+                                        <span class="text-slate-600 text-sm leading-relaxed font-medium">{{ trim($benefit) }}</span>
+                                    </li>
+                                    @endif
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="col-span-full text-center py-12">
+                        <p class="text-slate-500">{{ __('Belum ada paket untuk sistem ini.') }}</p>
+                    </div>
+                    @endforelse
+
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+</section>
+@endif
 
 {{-- TESTIMONIAL CLIENTS --}}
 @if(collect($clients ?? [])->isNotEmpty())
@@ -1165,10 +1342,25 @@
             spaceBetween: 24,
             loop: true,
             autoplay: { delay: 4000, disableOnInteraction: false },
-            pagination: { el: '.swiper-pagination', clickable: true, dynamicBullets: true },
+            pagination: { el: '.testimonial-swiper .swiper-pagination', clickable: true, dynamicBullets: true },
             navigation: { nextEl: '.swiper-next', prevEl: '.swiper-prev' },
             breakpoints: { 
                 640: { slidesPerView: 1.2 }, 
+                768: { slidesPerView: 2 }, 
+                1024: { slidesPerView: 3 } 
+            }
+        });
+
+        // Initialize Layanan Swiper
+        new Swiper('.layanan-swiper', {
+            slidesPerView: 1,
+            spaceBetween: 24,
+            loop: false,
+            autoplay: { delay: 5000, disableOnInteraction: false },
+            pagination: { el: '.layanan-swiper .swiper-pagination', clickable: true, dynamicBullets: true },
+            navigation: { nextEl: '.layanan-next', prevEl: '.layanan-prev' },
+            breakpoints: { 
+                640: { slidesPerView: 1.5 }, 
                 768: { slidesPerView: 2 }, 
                 1024: { slidesPerView: 3 } 
             }

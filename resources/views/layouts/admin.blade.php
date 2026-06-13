@@ -114,6 +114,11 @@
                         <span class="text-sm font-medium">Services</span>
                     </a>
 
+                    <a href="{{ route('admin.banners.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.banners.*') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
+                        <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.banners.*') ? 'fill-1' : '' }}">view_carousel</span>
+                        <span class="text-sm font-medium">Banners</span>
+                    </a>
+
                     <a href="{{ route('admin.teams.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.teams.*') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
                         <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.teams.*') ? 'fill-1' : '' }}">groups</span>
                         <span class="text-sm font-medium">Team Members</span>
@@ -168,6 +173,11 @@
                     </a>
 
                     @if(Auth::user()->role === 'super_admin')
+                    <a href="{{ route('admin.systems.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.systems.*') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
+                        <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.systems.*') ? 'fill-1' : '' }}">category</span>
+                        <span class="text-sm font-medium">Systems</span>
+                    </a>
+
                     <a href="{{ route('admin.packages.index') }}" class="flex items-center gap-3 rounded-xl px-4 py-2.5 transition-all duration-200 {{ request()->routeIs('admin.packages.*') ? 'bg-slate-900 text-white shadow-md' : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900' }}">
                         <span class="material-symbols-outlined text-[20px] {{ request()->routeIs('admin.packages.*') ? 'fill-1' : '' }}">inventory_2</span>
                         <span class="text-sm font-medium">Packages</span>

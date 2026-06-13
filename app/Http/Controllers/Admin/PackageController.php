@@ -10,23 +10,28 @@ class PackageController extends Controller
 {
     public function index()
     {
-        $packages = Package::latest()->get();
+        $packages = Package::with('system')->latest()->get();
         return view('admin.packages.index', compact('packages'));
     }
 
     public function create()
     {
-        return view('admin.packages.create');
+        $systems = \App\Models\System::orderBy('system_name')->get();
+        return view('admin.packages.create', compact('systems'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'system_id' => 'required|exists:mst_systems,id',
             'package_code' => 'required|string|max:20|unique:mst_packages,package_code',
             'package_name' => 'required|string|max:50',
-            'package_max_products' => 'required|integer|min:1',
+            'package_description' => 'nullable|string',
+            'package_benefits' => 'nullable|string',
             'package_price' => 'required|numeric|min:0',
         ]);
+
+        $validated['is_popular'] = $request->has('is_popular');
 
         Package::create($validated);
 
@@ -35,17 +40,22 @@ class PackageController extends Controller
 
     public function edit(Package $package)
     {
-        return view('admin.packages.edit', compact('package'));
+        $systems = \App\Models\System::orderBy('system_name')->get();
+        return view('admin.packages.edit', compact('package', 'systems'));
     }
 
     public function update(Request $request, Package $package)
     {
         $validated = $request->validate([
+            'system_id' => 'required|exists:mst_systems,id',
             'package_code' => 'required|string|max:20|unique:mst_packages,package_code,' . $package->id,
             'package_name' => 'required|string|max:50',
-            'package_max_products' => 'required|integer|min:1',
+            'package_description' => 'nullable|string',
+            'package_benefits' => 'nullable|string',
             'package_price' => 'required|numeric|min:0',
         ]);
+
+        $validated['is_popular'] = $request->has('is_popular');
 
         $package->update($validated);
 
