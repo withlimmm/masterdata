@@ -43,6 +43,26 @@ jobs:
           echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
           echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "GTM_ID=${{ secrets.GTM_ID }}" >> .env
+          echo "GA4_ID=${{ secrets.GA4_ID }}" >> .env
+          echo "RECAPTCHA_SITE_KEY=${{ secrets.RECAPTCHA_SITE_KEY }}" >> .env
+          echo "RECAPTCHA_SECRET_KEY=${{ secrets.RECAPTCHA_SECRET_KEY }}" >> .env
+          echo "DB_CONNECTION_POS=mysql_pos" >> .env
+          echo "DB_HOST_POS=localhost" >> .env
+          echo "DB_PORT_POS=3306" >> .env
+          echo "DB_DATABASE_POS=${{ secrets.DB_POS_DATABASE }}" >> .env
+          echo "DB_USERNAME_POS=${{ secrets.DB_POS_USERNAME }}" >> .env
+          echo "DB_PASSWORD_POS=${{ secrets.DB_POS_PASSWORD }}" >> .env
+          echo "DB_POS_HOST=localhost" >> .env
+          echo "DB_POS_PORT=3306" >> .env
+          echo "DB_POS_DATABASE=${{ secrets.DB_POS_DATABASE }}" >> .env
+          echo "DB_POS_USERNAME=${{ secrets.DB_POS_USERNAME }}" >> .env
+          echo "DB_POS_PASSWORD=${{ secrets.DB_POS_PASSWORD }}" >> .env
+          echo "DB_WMS_HOST=localhost" >> .env
+          echo "DB_WMS_PORT=3306" >> .env
+          echo "DB_WMS_DATABASE=${{ secrets.DB_WMS_DATABASE }}" >> .env
+          echo "DB_WMS_USERNAME=${{ secrets.DB_WMS_USERNAME }}" >> .env
+          echo "DB_WMS_PASSWORD=${{ secrets.DB_WMS_PASSWORD }}" >> .env
 
       - name: Deploy to CompanyProfile folder
         uses: burnett01/rsync-deployments@6.0.0

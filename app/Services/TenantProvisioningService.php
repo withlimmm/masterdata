@@ -64,36 +64,49 @@ class TenantProvisioningService
 
         $db->beginTransaction();
         try {
-            // 1. Insert/Update Vendor (Tenant) record in the microservice
-            // We assume the microservice has a `vendors` or `tenants` table
-            // For flexibility, let's just insert into a hypothetical `tenants` table
-            // In a real scenario, the microservice schema dictates this.
-            
-            // Note: If the microservice schema is not ready, this will fail and be caught by the Try-Catch.
-            $tenantExists = $db->table('tenants')->where('vendor_id', $company->vendor_id)->exists();
-            
-            if (!$tenantExists) {
-                $db->table('tenants')->insert([
-                    'vendor_id' => $company->vendor_id,
-                    'name' => $company->company_name,
-                    'domain' => $company->company_domain,
-                    'status' => $company->subscription_status,
+            // 1. Insert/Update Client (Tenant) record in the POS microservice
+            $clientExists = $db->table('ms_clients')->where('client_domain', $company->company_domain)->first();
+            $clientId = $clientExists ? $clientExists->client_id : \Illuminate\Support\Str::uuid()->toString();
+
+            if (!$clientExists) {
+                $db->table('ms_clients')->insert([
+                    'client_id' => $clientId,
+                    'client_name' => $company->company_name,
+                    'client_domain' => $company->company_domain,
+                    'client_status' => $company->subscription_status === 'active' ? 'active' : 'inactive',
+                    'client_email' => $company->company_email ?? $adminUser->email,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
             }
 
-            // 2. Insert the Admin User
-            // The microservice will use vendor_id to isolate data
-            $userExists = $db->table('users')->where('email', $adminUser->email)->exists();
+            // 2. Insert the Default Outlet
+            $outletId = \Illuminate\Support\Str::uuid()->toString();
+            $db->table('ms_outlets')->insert([
+                'outlet_id' => $outletId,
+                'outlet_client_id' => $clientId,
+                'outlet_code' => 'OUT-DEFAULT',
+                'outlet_name' => 'Cabang Utama ' . $company->company_name,
+                'outlet_address' => 'Alamat Cabang Utama',
+                'outlet_is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            // 3. Insert the Admin User
+            $userExists = $db->table('ms_users')->where('user_email', $adminUser->email)->exists();
             
             if (!$userExists) {
-                $db->table('users')->insert([
-                    'vendor_id' => $company->vendor_id, // Linking user to the vendor
-                    'name' => $adminUser->name,
-                    'email' => $adminUser->email,
-                    'password' => Hash::make($rawPassword), // Hash again or pass the hashed one
-                    'role' => 'admin',
+                $db->table('ms_users')->insert([
+                    'user_id' => \Illuminate\Support\Str::uuid()->toString(),
+                    'user_client_id' => $clientId,
+                    'user_outlet_id' => $outletId, // Linking to default outlet
+                    'user_code' => 'ADM-SAAS',
+                    'user_name' => $adminUser->name,
+                    'user_email' => $adminUser->email,
+                    'user_password' => Hash::make($rawPassword),
+                    'user_pin' => '1234', // Default PIN
+                    'user_status' => 'active',
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
