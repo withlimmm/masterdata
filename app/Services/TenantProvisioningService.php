@@ -112,6 +112,40 @@ class TenantProvisioningService
                 ]);
             }
 
+            // 4. Insert/Update the Client Subscription Plan
+            if ($company->package) {
+                // Find the matching plan in POS-Laravel by package_code
+                $planExists = $db->table('ms_plans')->where('plan_code', $company->package->package_code)->first();
+                
+                if ($planExists) {
+                    $subscriptionExists = $db->table('ms_client_subscriptions')->where('client_id', $clientId)->first();
+                    
+                    if (!$subscriptionExists) {
+                        $db->table('ms_client_subscriptions')->insert([
+                            'subscription_id' => \Illuminate\Support\Str::uuid()->toString(),
+                            'client_id'       => $clientId,
+                            'plan_id'         => $planExists->plan_id,
+                            'started_at'      => $company->subscription_start_at ?? now(),
+                            'expires_at'      => $company->subscription_expired_at,
+                            'status'          => $company->subscription_status === 'active' ? 'active' : 'expired',
+                            'created_at'      => now(),
+                            'updated_at'      => now(),
+                        ]);
+                    } else {
+                        $db->table('ms_client_subscriptions')
+                           ->where('client_id', $clientId)
+                           ->update([
+                                'plan_id'    => $planExists->plan_id,
+                                'expires_at' => $company->subscription_expired_at,
+                                'status'     => $company->subscription_status === 'active' ? 'active' : 'expired',
+                                'updated_at' => now(),
+                           ]);
+                    }
+                } else {
+                    Log::warning("Plan code {$company->package->package_code} not found in POS-Laravel ms_plans.");
+                }
+            }
+
             $db->commit();
             Log::info("Successfully synced {$company->company_code} to {$connectionName}");
         } catch (\Exception $e) {
